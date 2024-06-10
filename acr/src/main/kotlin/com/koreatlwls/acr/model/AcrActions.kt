@@ -16,13 +16,13 @@ internal sealed interface AcrActions {
             val bodyItems: ImmutableList<JsonItem>,
             val key: String,
             val newValue: String,
-        )
+        ) : Updates
 
         data class ResponseBodyValue(
             val bodyItems: ImmutableList<JsonItem>,
             val key: String,
             val newValue: String,
-        )
+        ) : Updates
 
         data object NewRequest : Updates
 
