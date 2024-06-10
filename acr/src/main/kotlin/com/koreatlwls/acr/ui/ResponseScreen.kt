@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.koreatlwls.acr.model.AcrActions
 import com.koreatlwls.acr.model.AcrUiState
 import com.koreatlwls.acr.model.JsonItem
 import com.koreatlwls.acr.ui.component.KeyValueRow
@@ -33,7 +34,7 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 internal fun ResponseScreen(
     responseUiState: AcrUiState.ResponseUiState,
-    onBodyValueChange: (key: String, value: String) -> Unit,
+    onActions: (AcrActions) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         if (responseUiState.bodyItems.isNotEmpty()) {
@@ -48,7 +49,15 @@ internal fun ResponseScreen(
 
         BodyItemList(
             items = responseUiState.bodyItems,
-            onBodyValueChange = onBodyValueChange,
+            onBodyValueChange = { key, value ->
+                onActions(
+                    AcrActions.Updates.ResponseBodyValue(
+                        bodyItems = responseUiState.bodyItems,
+                        key = key,
+                        newValue = value
+                    )
+                )
+            },
         )
     }
 }
