@@ -69,6 +69,7 @@ internal class AcrViewModel @Inject constructor(
     private fun updateRequestQueryValue(index: Int, value: String) {
         val queryValues = acrUiState.value.requestUiState.queryValues
             .toPersistentList()
+            .removeAt(index)
             .add(index, value)
         acrUiState.value = acrUiState.value.copy(
             requestUiState = acrUiState.value.requestUiState.copy(queryValues = queryValues)
@@ -78,6 +79,7 @@ internal class AcrViewModel @Inject constructor(
     private fun updateRequestHeaderValue(index: Int, value: String) {
         val headerValues = acrUiState.value.requestUiState.headerValues
             .toPersistentList()
+            .removeAt(index)
             .add(index, value)
         acrUiState.value = acrUiState.value.copy(
             requestUiState = acrUiState.value.requestUiState.copy(headerValues = headerValues)
