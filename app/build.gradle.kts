@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.apicustomrequester"
+    namespace = "com.koreatlwls.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.apicustomrequester"
+        applicationId = "com.koreatlwls.apicustomrequester"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

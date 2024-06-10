@@ -1,6 +1,6 @@
-package com.koreatlwls.apicustomrequester.remote
+package com.koreatlwls.app.remote
 
-import com.koreatlwls.apicustomrequester.remote.model.PokemonResponse
+import com.koreatlwls.app.remote.model.PokemonResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

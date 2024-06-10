@@ -1,4 +1,4 @@
-package com.koreatlwls.apicustomrequester
+package com.koreatlwls.app
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

@@ -1,4 +1,4 @@
-package com.koreatlwls.apicustomrequester.remote.model
+package com.koreatlwls.app.remote.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
