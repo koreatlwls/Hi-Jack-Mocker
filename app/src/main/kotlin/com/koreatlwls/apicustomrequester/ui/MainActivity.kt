@@ -1,4 +1,4 @@
-package com.koreatlwls.apicustomrequester
+package com.koreatlwls.apicustomrequester.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
