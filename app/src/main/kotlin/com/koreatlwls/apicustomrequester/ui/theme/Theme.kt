@@ -1,4 +1,4 @@
-package com.example.apicustomrequester.ui.theme
+package com.koreatlwls.apicustomrequester.ui.theme
 
 import android.app.Activity
 import android.os.Build
