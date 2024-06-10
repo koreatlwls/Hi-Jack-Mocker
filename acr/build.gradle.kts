@@ -43,4 +43,6 @@ dependencies {
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging.interceptor)
+
+    implementation(libs.kotlin.immutable)
 }
