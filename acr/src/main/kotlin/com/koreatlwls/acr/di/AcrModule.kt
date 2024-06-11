@@ -26,10 +26,10 @@ internal object AcrModule {
     @Provides
     @Singleton
     @Named(value = "send")
-    fun provideSendChannel() = Channel<Response>(Channel.CONFLATED)
+    fun provideSendChannel() = Channel<Response>(Channel.BUFFERED)
 
     @Provides
     @Singleton
     @Named(value = "receive")
-    fun provideReceiveChannel() = Channel<Response>(Channel.CONFLATED)
+    fun provideReceiveChannel() = Channel<Response>(Channel.BUFFERED)
 }
