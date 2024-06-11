@@ -36,7 +36,7 @@ import com.koreatlwls.acr.ui.component.TabRow
 
 @Composable
 internal fun CustomScreen(
-    viewModel: AcrViewModel = hiltViewModel(),
+    viewModel: CustomViewModel = hiltViewModel(),
     onFinish: () -> Unit,
 ) {
     val acrUiState by viewModel.acrUiState

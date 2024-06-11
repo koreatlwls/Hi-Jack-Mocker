@@ -22,7 +22,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 @HiltViewModel
-internal class AcrViewModel @Inject constructor(
+internal class CustomViewModel @Inject constructor(
     @Named("send") private val sendChannel: Channel<Response>,
     @Named("receive") private val receiveChannel: Channel<Response>,
 ) : ViewModel() {
