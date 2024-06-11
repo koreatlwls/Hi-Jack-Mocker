@@ -22,5 +22,11 @@ internal class MainViewModel @Inject constructor(
         viewModelScope.launch {
             _pokemons.value = pokemonService.getPokemons(0, 20).items
         }
+        viewModelScope.launch {
+            _pokemons.value = pokemonService.getPokemons(0, 20).items
+        }
+        viewModelScope.launch {
+            _pokemons.value = pokemonService.getPokemons(0, 20).items
+        }
     }
 }

@@ -3,11 +3,15 @@ package com.koreatlwls.acr.data
 import android.content.Context
 import android.content.Intent
 import com.koreatlwls.acr.ui.AcrActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
+import java.util.concurrent.CompletableFuture
 
 class AcrInterceptor(
     private val context: Context,
@@ -15,20 +19,20 @@ class AcrInterceptor(
     private val receiveChannel: Channel<Response>,
 ) : Interceptor {
 
-    override fun intercept(chain: Interceptor.Chain): Response = runBlocking {
+    override fun intercept(chain: Interceptor.Chain): Response  {
         val response = chain.proceed(chain.request())
 
-        sendChannel.send(response)
+        val future = CompletableFuture<Response>()
 
-        val deferred = async {
-            receiveChannel.receive()
+        CoroutineScope(Dispatchers.Default).launch {
+            sendChannel.send(response)
         }
 
-        val intent = Intent(context, AcrActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        context.startActivity(intent)
+        CoroutineScope(Dispatchers.Default).launch {
+            future.complete(receiveChannel.receive())
+        }
 
-        return@runBlocking deferred.await()
+        return future.get()
     }
 
 }

@@ -1,5 +1,6 @@
 package com.koreatlwls.app.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,15 +9,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.koreatlwls.acr.ui.AcrActivity
 import com.koreatlwls.app.ui.theme.ApiCustomRequesterTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,7 +42,7 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()){
     val pokemons by viewModel.pokemons.collectAsStateWithLifecycle(
         lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
     )
-
+val context = LocalContext.current
     Scaffold{
          LazyColumn(
              modifier = Modifier
@@ -46,6 +50,17 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()){
                  .padding(it),
              verticalArrangement = Arrangement.spacedBy(8.dp)
          ){
+             item{
+                 Button(
+                     onClick = {
+                         val intent = Intent(context, AcrActivity::class.java)
+                         context.startActivity(intent)
+                     }
+                 ){
+                    Text(text = "Start")
+                 }
+             }
+
              items(pokemons.size){
                  Text(
                      text = pokemons[it].name,
