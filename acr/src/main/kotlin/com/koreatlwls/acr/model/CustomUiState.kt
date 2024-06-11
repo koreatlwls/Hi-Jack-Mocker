@@ -4,14 +4,11 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 internal data class CustomUiState(
-    val method: String = "",
-    val scheme: String = "",
-    val host: String = "",
-    val path: String = "",
+    val apiUiState: ApiUiState = ApiUiState(),
     val requestUiState: RequestUiState = RequestUiState(),
     val responseUiState: ResponseUiState = ResponseUiState(),
-){
-    val fullUrl = "$scheme://$host/$path${makeQueries()}"
+) {
+    val fullUrl = "${apiUiState.scheme}://${apiUiState.host}/${apiUiState.path}${makeQueries()}"
 
     private fun makeQueries(): String {
         return requestUiState.queryKeys.zip(requestUiState.queryValues)

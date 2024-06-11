@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.koreatlwls.acr.extensions.parseGroupedListToJSONObject
-import com.koreatlwls.acr.extensions.toUiState
+import com.koreatlwls.acr.extensions.toCustomUiState
 import com.koreatlwls.acr.model.CustomActions
 import com.koreatlwls.acr.model.CustomUiState
 import com.koreatlwls.acr.model.JsonItem
@@ -34,7 +34,7 @@ internal class CustomViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             response.value = sendChannel.receive()
-            customUiState.value = response.value?.toUiState() ?: CustomUiState()
+            customUiState.value = response.value?.toCustomUiState() ?: CustomUiState()
         }
     }
 

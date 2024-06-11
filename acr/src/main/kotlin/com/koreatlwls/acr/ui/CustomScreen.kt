@@ -108,7 +108,7 @@ private fun CustomScreen(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = arcUiState.path,
+                text = arcUiState.apiUiState.path,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
