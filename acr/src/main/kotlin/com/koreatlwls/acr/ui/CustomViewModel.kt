@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.koreatlwls.acr.extensions.parseGroupedListToJSONObject
 import com.koreatlwls.acr.extensions.toUiState
-import com.koreatlwls.acr.model.AcrActions
-import com.koreatlwls.acr.model.AcrUiState
+import com.koreatlwls.acr.model.CustomActions
+import com.koreatlwls.acr.model.CustomUiState
 import com.koreatlwls.acr.model.JsonItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
@@ -28,38 +28,38 @@ internal class CustomViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val response = mutableStateOf<Response?>(null)
-    val acrUiState = mutableStateOf(AcrUiState())
+    val customUiState = mutableStateOf(CustomUiState())
     val onFinishEvent = mutableStateOf(false)
 
     init {
         viewModelScope.launch {
             response.value = sendChannel.receive()
-            acrUiState.value = response.value?.toUiState() ?: AcrUiState()
+            customUiState.value = response.value?.toUiState() ?: CustomUiState()
         }
     }
 
-    fun handleActions(action: AcrActions.Updates) {
+    fun handleActions(action: CustomActions.Updates) {
         when (action) {
-            AcrActions.Updates.NewRequest -> sendNewRequest()
-            AcrActions.Updates.NewResponse -> sendNewResponse()
-            is AcrActions.Updates.RequestHeaderValue -> updateRequestHeaderValue(
+            CustomActions.Updates.NewRequest -> sendNewRequest()
+            CustomActions.Updates.NewResponse -> sendNewResponse()
+            is CustomActions.Updates.RequestHeaderValue -> updateRequestHeaderValue(
                 index = action.index,
                 value = action.value
             )
 
-            is AcrActions.Updates.RequestQueryValue -> updateRequestQueryValue(
+            is CustomActions.Updates.RequestQueryValue -> updateRequestQueryValue(
                 index = action.index,
                 value = action.value
             )
 
-            is AcrActions.Updates.RequestBodyValue -> updateRequestBodyValue(
-                bodyItems = acrUiState.value.requestUiState.bodyItems,
+            is CustomActions.Updates.RequestBodyValue -> updateRequestBodyValue(
+                bodyItems = customUiState.value.requestUiState.bodyItems,
                 key = action.key,
                 newValue = action.newValue
             )
 
-            is AcrActions.Updates.ResponseBodyValue -> updateResponseBodyValue(
-                bodyItems = acrUiState.value.responseUiState.bodyItems,
+            is CustomActions.Updates.ResponseBodyValue -> updateResponseBodyValue(
+                bodyItems = customUiState.value.responseUiState.bodyItems,
                 key = action.key,
                 newValue = action.newValue
             )
@@ -67,22 +67,22 @@ internal class CustomViewModel @Inject constructor(
     }
 
     private fun updateRequestQueryValue(index: Int, value: String) {
-        val queryValues = acrUiState.value.requestUiState.queryValues
+        val queryValues = customUiState.value.requestUiState.queryValues
             .toPersistentList()
             .removeAt(index)
             .add(index, value)
-        acrUiState.value = acrUiState.value.copy(
-            requestUiState = acrUiState.value.requestUiState.copy(queryValues = queryValues)
+        customUiState.value = customUiState.value.copy(
+            requestUiState = customUiState.value.requestUiState.copy(queryValues = queryValues)
         )
     }
 
     private fun updateRequestHeaderValue(index: Int, value: String) {
-        val headerValues = acrUiState.value.requestUiState.headerValues
+        val headerValues = customUiState.value.requestUiState.headerValues
             .toPersistentList()
             .removeAt(index)
             .add(index, value)
-        acrUiState.value = acrUiState.value.copy(
-            requestUiState = acrUiState.value.requestUiState.copy(headerValues = headerValues)
+        customUiState.value = customUiState.value.copy(
+            requestUiState = customUiState.value.requestUiState.copy(headerValues = headerValues)
         )
     }
 
@@ -93,8 +93,8 @@ internal class CustomViewModel @Inject constructor(
     ) {
         val updateBodyItems = updateBodyItems(bodyItems, key, newValue)
 
-        acrUiState.value = acrUiState.value.copy(
-            requestUiState = acrUiState.value.requestUiState.copy(bodyItems = updateBodyItems)
+        customUiState.value = customUiState.value.copy(
+            requestUiState = customUiState.value.requestUiState.copy(bodyItems = updateBodyItems)
         )
     }
 
@@ -105,8 +105,8 @@ internal class CustomViewModel @Inject constructor(
     ) {
         val updateBodyItems = updateBodyItems(bodyItems, key, newValue)
 
-        acrUiState.value = acrUiState.value.copy(
-            responseUiState = AcrUiState.ResponseUiState(bodyItems = updateBodyItems)
+        customUiState.value = customUiState.value.copy(
+            responseUiState = CustomUiState.ResponseUiState(bodyItems = updateBodyItems)
         )
     }
 
@@ -144,18 +144,18 @@ internal class CustomViewModel @Inject constructor(
                     .request
                     .newBuilder()
                     .also { builder ->
-                        builder.url(acrUiState.value.fullUrl)
-                        acrUiState.value
+                        builder.url(customUiState.value.fullUrl)
+                        customUiState.value
                             .requestUiState
                             .headerKeys
                             .forEachIndexed { index, key ->
                                 builder.addHeader(
                                     key,
-                                    acrUiState.value.requestUiState.headerValues[index]
+                                    customUiState.value.requestUiState.headerValues[index]
                                 )
                             }
 
-                        acrUiState.value
+                        customUiState.value
                             .requestUiState
                             .bodyItems
                             .parseGroupedListToJSONObject()
@@ -177,7 +177,7 @@ internal class CustomViewModel @Inject constructor(
 
     private fun sendNewResponse() {
         response.value?.let { safeResponse ->
-            acrUiState.value
+            customUiState.value
                 .responseUiState
                 .bodyItems
                 .parseGroupedListToJSONObject()?.let { safeJson ->

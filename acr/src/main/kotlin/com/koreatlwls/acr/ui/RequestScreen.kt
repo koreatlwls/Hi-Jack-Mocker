@@ -10,14 +10,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.koreatlwls.acr.model.AcrActions
-import com.koreatlwls.acr.model.AcrUiState
+import com.koreatlwls.acr.model.CustomActions
+import com.koreatlwls.acr.model.CustomUiState
 import com.koreatlwls.acr.ui.component.KeyValueRow
 
 @Composable
 internal fun RequestScreen(
-    requestUiState: AcrUiState.RequestUiState,
-    onActions: (AcrActions) -> Unit,
+    requestUiState: CustomUiState.RequestUiState,
+    onActions: (CustomActions) -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -37,7 +37,7 @@ internal fun RequestScreen(
                 key = key,
                 value = requestUiState.queryValues[index],
                 onValueChange = {
-                    onActions(AcrActions.Updates.RequestQueryValue(index, it))
+                    onActions(CustomActions.Updates.RequestQueryValue(index, it))
                 }
             )
 
@@ -59,7 +59,7 @@ internal fun RequestScreen(
                 key = key,
                 value = requestUiState.headerValues[index],
                 onValueChange = {
-                    onActions(AcrActions.Updates.RequestHeaderValue(index, it))
+                    onActions(CustomActions.Updates.RequestHeaderValue(index, it))
                 }
             )
 
@@ -80,7 +80,7 @@ internal fun RequestScreen(
             items = requestUiState.bodyItems,
             onBodyValueChange = { key, value ->
                 onActions(
-                    AcrActions.Updates.RequestBodyValue(
+                    CustomActions.Updates.RequestBodyValue(
                         bodyItems = requestUiState.bodyItems,
                         key = key,
                         newValue = value

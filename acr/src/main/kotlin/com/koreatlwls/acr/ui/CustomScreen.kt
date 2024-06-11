@@ -30,8 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.koreatlwls.acr.model.AcrActions
-import com.koreatlwls.acr.model.AcrUiState
+import com.koreatlwls.acr.model.CustomActions
+import com.koreatlwls.acr.model.CustomUiState
 import com.koreatlwls.acr.ui.component.TabRow
 
 @Composable
@@ -39,7 +39,7 @@ internal fun CustomScreen(
     viewModel: CustomViewModel = hiltViewModel(),
     onFinish: () -> Unit,
 ) {
-    val acrUiState by viewModel.acrUiState
+    val acrUiState by viewModel.customUiState
     val onFinishEvent by viewModel.onFinishEvent
 
     LaunchedEffect(onFinishEvent) {
@@ -52,8 +52,8 @@ internal fun CustomScreen(
         arcUiState = acrUiState,
         onActions = { actions ->
             when (actions) {
-                is AcrActions.Navigates.Back -> onFinish()
-                is AcrActions.Updates -> viewModel.handleActions(actions)
+                is CustomActions.Navigates.Back -> onFinish()
+                is CustomActions.Updates -> viewModel.handleActions(actions)
             }
         }
     )
@@ -62,8 +62,8 @@ internal fun CustomScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CustomScreen(
-    arcUiState: AcrUiState,
-    onActions: (AcrActions) -> Unit,
+    arcUiState: CustomUiState,
+    onActions: (CustomActions) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     var selectedIndex by remember {
@@ -79,9 +79,9 @@ private fun CustomScreen(
                     Icon(
                         modifier = Modifier.clickable {
                             if (selectedIndex == 0) {
-                                onActions(AcrActions.Updates.NewRequest)
+                                onActions(CustomActions.Updates.NewRequest)
                             } else {
-                                onActions(AcrActions.Updates.NewResponse)
+                                onActions(CustomActions.Updates.NewResponse)
                             }
                         },
                         imageVector = Icons.Filled.Done,
@@ -92,7 +92,7 @@ private fun CustomScreen(
                     Icon(
                         imageVector = Icons.Filled.Close,
                         contentDescription = "close",
-                        modifier = Modifier.clickable { onActions(AcrActions.Navigates.Back) }
+                        modifier = Modifier.clickable { onActions(CustomActions.Navigates.Back) }
                     )
                 }
             )

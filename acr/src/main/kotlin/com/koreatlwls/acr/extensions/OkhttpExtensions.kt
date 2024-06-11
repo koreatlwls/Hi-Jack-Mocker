@@ -1,6 +1,6 @@
 package com.koreatlwls.acr.extensions
 
-import com.koreatlwls.acr.model.AcrUiState
+import com.koreatlwls.acr.model.CustomUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import okhttp3.RequestBody
@@ -21,12 +21,12 @@ internal fun RequestBody.extractRequestJson(): JSONObject {
     return JSONObject(jsonString)
 }
 
-internal fun Response.toUiState(): AcrUiState = AcrUiState(
+internal fun Response.toUiState(): CustomUiState = CustomUiState(
     method = this.request.method,
     scheme = this.request.url.scheme,
     host = this.request.url.host,
     path = this.request.url.pathSegments.joinToString("/"),
-    requestUiState = AcrUiState.RequestUiState(
+    requestUiState = CustomUiState.RequestUiState(
         queryKeys = this.request.url.queryParameterNames.toImmutableList(),
         queryValues = this.request.url.queryParameterNames.toList()
             .map { this.request.url.queryParameter(it) ?: "" }
@@ -37,7 +37,7 @@ internal fun Response.toUiState(): AcrUiState = AcrUiState(
         bodyItems = this.request.body?.extractRequestJson()?.parseJsonObjectToGroupedList()
             ?: persistentListOf()
     ),
-    responseUiState = AcrUiState.ResponseUiState(
+    responseUiState = CustomUiState.ResponseUiState(
         bodyItems = this.body?.extractResponseJson()?.parseJsonObjectToGroupedList()
             ?: persistentListOf()
     )

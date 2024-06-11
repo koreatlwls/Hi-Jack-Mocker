@@ -3,7 +3,7 @@ package com.koreatlwls.acr.model
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-internal data class AcrUiState(
+internal data class CustomUiState(
     val method: String = "",
     val scheme: String = "",
     val host: String = "",
