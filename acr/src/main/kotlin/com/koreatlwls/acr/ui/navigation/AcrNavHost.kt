@@ -6,11 +6,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.koreatlwls.acr.ui.list.ApiListScreen
 import com.koreatlwls.acr.ui.custom.CustomScreen
+import com.koreatlwls.acr.ui.list.ApiListScreen
 
 @Composable
-internal fun AcrNavHost() {
+internal fun AcrNavHost(onFinish: () -> Unit) {
     val navController = rememberNavController()
 
     NavHost(
@@ -22,7 +22,8 @@ internal fun AcrNavHost() {
             ApiListScreen(
                 onNavigateToCustom = {
                     navController.navigate("custom")
-                }
+                },
+                onFinish = onFinish,
             )
         }
 

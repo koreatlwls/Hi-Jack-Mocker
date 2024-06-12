@@ -14,7 +14,7 @@ class AcrActivity : ComponentActivity() {
 
         setContent {
             MaterialTheme {
-                AcrNavHost()
+                AcrNavHost(onFinish = { finish() })
             }
         }
     }
