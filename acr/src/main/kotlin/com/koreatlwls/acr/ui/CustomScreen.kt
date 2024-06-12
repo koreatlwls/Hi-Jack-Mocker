@@ -30,21 +30,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.koreatlwls.acr.model.CustomActions
 import com.koreatlwls.acr.model.CustomUiState
 import com.koreatlwls.acr.ui.component.TabRow
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 internal fun CustomScreen(
-    viewModel: CustomViewModel = hiltViewModel(),
-    onFinish: () -> Unit,
+    viewModel: AcrViewModel = hiltViewModel(),
+    onBack: () -> Unit,
 ) {
-    val acrUiState by viewModel.customUiState
-    val onFinishEvent by viewModel.onFinishEvent
+    val acrUiState by viewModel.customUiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(onFinishEvent) {
-        if (onFinishEvent) {
-            onFinish()
+    LaunchedEffect(Unit) {
+        viewModel.onBackEvent.collectLatest {
+            if (it) {
+                onBack()
+            }
         }
     }
 
@@ -52,8 +55,8 @@ internal fun CustomScreen(
         arcUiState = acrUiState,
         onActions = { actions ->
             when (actions) {
-                is CustomActions.Navigates.Back -> onFinish()
-                is CustomActions.Updates -> viewModel.handleActions(actions)
+                is CustomActions.Navigates.Back -> onBack()
+                is CustomActions.Updates -> viewModel.handleCustomActions(actions)
             }
         }
     )
