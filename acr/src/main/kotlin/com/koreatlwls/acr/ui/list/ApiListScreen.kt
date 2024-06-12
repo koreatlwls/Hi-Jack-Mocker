@@ -1,5 +1,6 @@
 package com.koreatlwls.acr.ui.list
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -48,8 +49,8 @@ internal fun ApiListScreen(
         }
     }
 
-    LaunchedEffect(onFinishEvent){
-        if(onFinishEvent){
+    LaunchedEffect(onFinishEvent) {
+        if (onFinishEvent) {
             onFinish()
         }
     }
@@ -69,30 +70,25 @@ private fun ApiListScreen(
     apiList: ImmutableList<ApiUiState>,
     onActions: (ApiActions) -> Unit,
 ) {
-    Scaffold(containerColor = Color.Transparent) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
-            contentAlignment = Alignment.Center
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(horizontal = 4.dp)
-            ) {
-                itemsIndexed(apiList) { index, item ->
-                    Column {
-                        ApiListItem(
-                            index = index,
-                            apiUiState = item,
-                            onActions = onActions,
-                        )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Transparent)
+            .padding(horizontal = 8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        LazyColumn {
+            itemsIndexed(apiList) { index, item ->
+                Column {
+                    ApiListItem(
+                        index = index,
+                        apiUiState = item,
+                        onActions = onActions,
+                    )
 
-                        if (index != apiList.lastIndex) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            HorizontalDivider(thickness = 1.dp, color = Color.Gray)
-                        }
+                    if (index != apiList.lastIndex) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        HorizontalDivider(thickness = 1.dp, color = Color.Gray)
                     }
                 }
             }

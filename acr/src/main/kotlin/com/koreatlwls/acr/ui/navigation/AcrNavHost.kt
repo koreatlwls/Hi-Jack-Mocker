@@ -1,6 +1,6 @@
 package com.koreatlwls.acr.ui.navigation
 
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -14,7 +14,7 @@ internal fun AcrNavHost(onFinish: () -> Unit) {
     val navController = rememberNavController()
 
     NavHost(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.wrapContentSize(),
         navController = navController,
         startDestination = "apiList"
     ) {
