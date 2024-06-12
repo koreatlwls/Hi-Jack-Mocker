@@ -7,5 +7,7 @@ internal sealed interface ApiActions {
 
         @JvmInline
         value class DeleteApi(val index: Int) : Updates
+
+        data object DeleteAllApi : Updates
     }
 }

@@ -62,6 +62,8 @@ internal class AcrViewModel @Inject constructor(
             is ApiActions.Updates.ClickApi -> clickedResponse(action.index)
 
             is ApiActions.Updates.DeleteApi -> deleteAndSendResponse(action.index)
+
+            is ApiActions.Updates.DeleteAllApi -> deleteAndSendAllResponse()
         }
     }
 
@@ -126,6 +128,17 @@ internal class AcrViewModel @Inject constructor(
                 initClickedResponse()
             }
         }
+    }
+
+    private fun deleteAndSendAllResponse(){
+        responseList.forEach {response ->
+            viewModelScope.launch {
+                receiveChannel.send(response)
+            }
+        }
+
+        responseList.clear()
+        apiUiStateList.clear()
     }
 
     private fun initClickedResponse() {
