@@ -41,7 +41,9 @@ internal fun CustomScreen(
     viewModel: AcrViewModel = hiltViewModel(),
     onBack: () -> Unit,
 ) {
-    val acrUiState by viewModel.customUiState.collectAsStateWithLifecycle()
+    val customUiState by viewModel.customUiState.collectAsStateWithLifecycle(
+        lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    )
 
     LaunchedEffect(Unit) {
         viewModel.onBackEvent.collectLatest {
@@ -52,7 +54,7 @@ internal fun CustomScreen(
     }
 
     CustomScreen(
-        arcUiState = acrUiState,
+        customUiState = customUiState,
         onActions = { actions ->
             when (actions) {
                 is CustomActions.Navigates.Back -> onBack()
@@ -65,7 +67,7 @@ internal fun CustomScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CustomScreen(
-    arcUiState: CustomUiState,
+    customUiState: CustomUiState,
     onActions: (CustomActions) -> Unit,
 ) {
     val scrollState = rememberScrollState()
@@ -111,7 +113,7 @@ private fun CustomScreen(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = arcUiState.apiUiState.path,
+                text = customUiState.apiUiState.path,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -132,14 +134,14 @@ private fun CustomScreen(
             when (selectedIndex) {
                 0 -> {
                     RequestScreen(
-                        requestUiState = arcUiState.requestUiState,
+                        requestUiState = customUiState.requestUiState,
                         onActions = onActions,
                     )
                 }
 
                 else -> {
                     ResponseScreen(
-                        responseUiState = arcUiState.responseUiState,
+                        responseUiState = customUiState.responseUiState,
                         onActions = onActions
                     )
                 }
