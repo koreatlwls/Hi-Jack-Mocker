@@ -1,4 +1,4 @@
-package com.koreatlwls.acr.ui
+package com.koreatlwls.acr.ui.custom
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState

@@ -1,4 +1,4 @@
-package com.koreatlwls.acr.ui
+package com.koreatlwls.acr.util
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable

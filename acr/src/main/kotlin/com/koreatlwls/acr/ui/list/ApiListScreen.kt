@@ -1,4 +1,4 @@
-package com.koreatlwls.acr.ui
+package com.koreatlwls.acr.ui.list
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,9 +15,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.koreatlwls.acr.model.ApiActions
 import com.koreatlwls.acr.model.ApiUiState
+import com.koreatlwls.acr.ui.AcrViewModel
+import com.koreatlwls.acr.util.composableActivityViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 

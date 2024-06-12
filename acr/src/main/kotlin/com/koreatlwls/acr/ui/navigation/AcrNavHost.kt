@@ -6,8 +6,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.koreatlwls.acr.ui.ApiListScreen
-import com.koreatlwls.acr.ui.CustomScreen
+import com.koreatlwls.acr.ui.list.ApiListScreen
+import com.koreatlwls.acr.ui.custom.CustomScreen
 
 @Composable
 internal fun AcrNavHost() {
