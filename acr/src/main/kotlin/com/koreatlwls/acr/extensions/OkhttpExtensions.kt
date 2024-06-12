@@ -23,18 +23,8 @@ internal fun RequestBody.extractRequestJson(): JSONObject {
 }
 
 internal fun Response.toCustomUiState(): CustomUiState = CustomUiState(
-    apiUiState = ApiUiState(
-        method = this.request.method,
-        scheme = this.request.url.scheme,
-        host = this.request.url.host,
-        path = this.request.url.pathSegments.joinToString("/"),
-        code = this.code,
-    ),
+    apiUiState = toApiUiState(),
     requestUiState = CustomUiState.RequestUiState(
-        queryKeys = this.request.url.queryParameterNames.toImmutableList(),
-        queryValues = this.request.url.queryParameterNames.toList()
-            .map { this.request.url.queryParameter(it) ?: "" }
-            .toImmutableList(),
         headerKeys = this.request.headers.names().toImmutableList(),
         headerValues = this.request.headers.names().toList().map { header(it) ?: "" }
             .toImmutableList(),
@@ -47,10 +37,14 @@ internal fun Response.toCustomUiState(): CustomUiState = CustomUiState(
     )
 )
 
-internal fun Response.toApiUiState() : ApiUiState = ApiUiState(
+internal fun Response.toApiUiState(): ApiUiState = ApiUiState(
     method = this.request.method,
     scheme = this.request.url.scheme,
     host = this.request.url.host,
     path = this.request.url.pathSegments.joinToString("/"),
     code = this.code,
+    queryKeys = this.request.url.queryParameterNames.toImmutableList(),
+    queryValues = this.request.url.queryParameterNames.toList()
+        .map { this.request.url.queryParameter(it) ?: "" }
+        .toImmutableList(),
 )

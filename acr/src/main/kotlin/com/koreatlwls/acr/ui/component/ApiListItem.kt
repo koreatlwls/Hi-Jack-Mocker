@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,17 +45,19 @@ internal fun ApiListItem(
                 Text(
                     text = apiUiState.method,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     color = Color.Black
                 )
 
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
-                    text = apiUiState.path,
+                    text = apiUiState.pathWithQueries,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = Color.Black
+                    fontSize = 14.sp,
+                    color = Color.Black,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
                 )
             }
 

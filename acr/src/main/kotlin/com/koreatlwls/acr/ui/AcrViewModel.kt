@@ -130,8 +130,8 @@ internal class AcrViewModel @Inject constructor(
         }
     }
 
-    private fun deleteAndSendAllResponse(){
-        responseList.forEach {response ->
+    private fun deleteAndSendAllResponse() {
+        responseList.forEach { response ->
             viewModelScope.launch {
                 receiveChannel.send(response)
             }
@@ -147,12 +147,12 @@ internal class AcrViewModel @Inject constructor(
     }
 
     private fun updateRequestQueryValue(index: Int, value: String) {
-        val queryValues = _customUiState.value.requestUiState.queryValues
+        val queryValues = _customUiState.value.apiUiState.queryValues
             .toPersistentList()
             .removeAt(index)
             .add(index, value)
         _customUiState.value = _customUiState.value.copy(
-            requestUiState = _customUiState.value.requestUiState.copy(queryValues = queryValues)
+            apiUiState = _customUiState.value.apiUiState.copy(queryValues = queryValues)
         )
     }
 
@@ -223,7 +223,7 @@ internal class AcrViewModel @Inject constructor(
                 .request
                 .newBuilder()
                 .also { builder ->
-                    builder.url(customUiState.value.fullUrl)
+                    builder.url(customUiState.value.apiUiState.fullUrl)
                     customUiState.value
                         .requestUiState
                         .headerKeys

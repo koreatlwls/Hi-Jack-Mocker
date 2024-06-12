@@ -10,19 +10,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.koreatlwls.acr.model.ApiUiState
 import com.koreatlwls.acr.model.CustomActions
 import com.koreatlwls.acr.model.CustomUiState
 import com.koreatlwls.acr.ui.component.KeyValueRow
 
 @Composable
 internal fun RequestScreen(
+    apiUiState: ApiUiState,
     requestUiState: CustomUiState.RequestUiState,
     onActions: (CustomActions) -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        if (requestUiState.queryKeys.isNotEmpty()) {
+        if (apiUiState.queryKeys.isNotEmpty()) {
             Text(
                 text = "Query",
                 fontSize = 16.sp,
@@ -32,10 +34,10 @@ internal fun RequestScreen(
             Spacer(modifier = Modifier.height(4.dp))
         }
 
-        requestUiState.queryKeys.forEachIndexed { index, key ->
+        apiUiState.queryKeys.forEachIndexed { index, key ->
             KeyValueRow(
                 key = key,
-                value = requestUiState.queryValues[index],
+                value = apiUiState.queryValues[index],
                 onValueChange = {
                     onActions(CustomActions.Updates.RequestQueryValue(index, it))
                 }

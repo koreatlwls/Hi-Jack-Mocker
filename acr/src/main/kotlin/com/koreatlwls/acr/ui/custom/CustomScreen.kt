@@ -141,6 +141,7 @@ private fun CustomScreen(
             when (selectedIndex) {
                 0 -> {
                     RequestScreen(
+                        apiUiState = customUiState.apiUiState,
                         requestUiState = customUiState.requestUiState,
                         onActions = onActions,
                     )
