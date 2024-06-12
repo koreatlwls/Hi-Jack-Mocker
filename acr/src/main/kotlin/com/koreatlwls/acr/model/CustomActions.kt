@@ -27,5 +27,7 @@ internal sealed interface CustomActions {
         data object NewRequest : Updates
 
         data object NewResponse : Updates
+
+        data object InitClickApi : Updates
     }
 }

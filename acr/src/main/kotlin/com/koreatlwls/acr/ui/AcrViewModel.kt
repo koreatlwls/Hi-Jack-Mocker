@@ -63,7 +63,6 @@ internal class AcrViewModel @Inject constructor(
     fun handleApiActions(action: ApiActions.Updates) {
         when (action) {
             is ApiActions.Updates.ClickApi -> clickedResponse(action.index)
-            ApiActions.Updates.InitClickApi -> initClickedResponse()
         }
     }
 
@@ -98,6 +97,8 @@ internal class AcrViewModel @Inject constructor(
                 key = action.key,
                 newValue = action.newValue
             )
+
+            CustomActions.Updates.InitClickApi -> initClickedResponse()
         }
     }
 

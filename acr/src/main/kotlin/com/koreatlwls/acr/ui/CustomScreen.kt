@@ -10,13 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,7 +31,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.koreatlwls.acr.model.CustomActions
 import com.koreatlwls.acr.model.CustomUiState
@@ -38,7 +39,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 internal fun CustomScreen(
-    viewModel: AcrViewModel = hiltViewModel(),
+    viewModel: AcrViewModel = composableActivityViewModel(),
     onBack: () -> Unit,
 ) {
     val customUiState by viewModel.customUiState.collectAsStateWithLifecycle(
@@ -57,7 +58,11 @@ internal fun CustomScreen(
         customUiState = customUiState,
         onActions = { actions ->
             when (actions) {
-                is CustomActions.Navigates.Back -> onBack()
+                is CustomActions.Navigates.Back -> {
+                    viewModel.handleCustomActions(CustomActions.Updates.InitClickApi)
+                    onBack()
+                }
+
                 is CustomActions.Updates -> viewModel.handleCustomActions(actions)
             }
         }
@@ -81,21 +86,22 @@ private fun CustomScreen(
                 title = { Text(text = "ApiCustomRequester") },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
                 actions = {
-                    Icon(
-                        modifier = Modifier.clickable {
+                    TextButton(
+                        onClick = {
                             if (selectedIndex == 0) {
                                 onActions(CustomActions.Updates.NewRequest)
                             } else {
                                 onActions(CustomActions.Updates.NewResponse)
                             }
                         },
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = "done"
-                    )
+                        colors = ButtonDefaults.textButtonColors(contentColor = Color.Black),
+                    ) {
+                        Text(text = "Send")
+                    }
                 },
                 navigationIcon = {
                     Icon(
-                        imageVector = Icons.Filled.Close,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "close",
                         modifier = Modifier.clickable { onActions(CustomActions.Navigates.Back) }
                     )

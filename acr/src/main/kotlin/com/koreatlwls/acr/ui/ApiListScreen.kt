@@ -23,7 +23,7 @@ import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 internal fun ApiListScreen(
-    viewModel: AcrViewModel = hiltViewModel(),
+    viewModel: AcrViewModel = composableActivityViewModel(),
     onNavigateToCustom : () -> Unit,
 ) {
     val apiList = viewModel.apiUiStateList
@@ -32,7 +32,6 @@ internal fun ApiListScreen(
     LaunchedEffect(clickedResponse) {
         if(clickedResponse != null){
             onNavigateToCustom()
-            viewModel.handleApiActions(action = ApiActions.Updates.InitClickApi)
         }
     }
 
