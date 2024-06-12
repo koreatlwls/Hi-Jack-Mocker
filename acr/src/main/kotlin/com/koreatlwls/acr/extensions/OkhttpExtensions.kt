@@ -1,5 +1,6 @@
 package com.koreatlwls.acr.extensions
 
+import com.koreatlwls.acr.model.ApiUiState
 import com.koreatlwls.acr.model.CustomUiState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -21,11 +22,15 @@ internal fun RequestBody.extractRequestJson(): JSONObject {
     return JSONObject(jsonString)
 }
 
-internal fun Response.toUiState(): CustomUiState = CustomUiState(
-    method = this.request.method,
-    scheme = this.request.url.scheme,
-    host = this.request.url.host,
-    path = this.request.url.pathSegments.joinToString("/"),
+internal fun Response.toCustomUiState(): CustomUiState = CustomUiState(
+    apiUiState = ApiUiState(
+        method = this.request.method,
+        scheme = this.request.url.scheme,
+        host = this.request.url.host,
+        path = this.request.url.pathSegments.joinToString("/"),
+        code = this.code,
+        isSuccessful = this.isSuccessful,
+    ),
     requestUiState = CustomUiState.RequestUiState(
         queryKeys = this.request.url.queryParameterNames.toImmutableList(),
         queryValues = this.request.url.queryParameterNames.toList()
@@ -41,4 +46,13 @@ internal fun Response.toUiState(): CustomUiState = CustomUiState(
         bodyItems = this.body?.extractResponseJson()?.parseJsonObjectToGroupedList()
             ?: persistentListOf()
     )
+)
+
+internal fun Response.toApiUiState() : ApiUiState = ApiUiState(
+    method = this.request.method,
+    scheme = this.request.url.scheme,
+    host = this.request.url.host,
+    path = this.request.url.pathSegments.joinToString("/"),
+    code = this.code,
+    isSuccessful = this.isSuccessful,
 )
