@@ -29,7 +29,6 @@ internal fun Response.toCustomUiState(): CustomUiState = CustomUiState(
         host = this.request.url.host,
         path = this.request.url.pathSegments.joinToString("/"),
         code = this.code,
-        isSuccessful = this.isSuccessful,
     ),
     requestUiState = CustomUiState.RequestUiState(
         queryKeys = this.request.url.queryParameterNames.toImmutableList(),
@@ -54,5 +53,4 @@ internal fun Response.toApiUiState() : ApiUiState = ApiUiState(
     host = this.request.url.host,
     path = this.request.url.pathSegments.joinToString("/"),
     code = this.code,
-    isSuccessful = this.isSuccessful,
 )

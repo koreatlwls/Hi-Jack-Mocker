@@ -6,5 +6,4 @@ internal data class ApiUiState(
     val host: String = "",
     val path: String = "",
     val code : Int = 0,
-    val isSuccessful : Boolean = false,
 )

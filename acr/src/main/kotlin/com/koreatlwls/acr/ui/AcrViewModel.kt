@@ -45,11 +45,8 @@ internal class AcrViewModel @Inject constructor(
     private val _customUiState = MutableStateFlow(CustomUiState())
     val customUiState: StateFlow<CustomUiState> = _customUiState.asStateFlow()
 
-    private val _onBackEvent : MutableSharedFlow<Boolean> = MutableSharedFlow()
+    private val _onBackEvent: MutableSharedFlow<Boolean> = MutableSharedFlow()
     val onBackEvent = _onBackEvent.asSharedFlow()
-
-    private val _onFinishEvent : MutableSharedFlow<Boolean> = MutableSharedFlow()
-    val onFinishEvent = _onFinishEvent.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -63,6 +60,8 @@ internal class AcrViewModel @Inject constructor(
     fun handleApiActions(action: ApiActions.Updates) {
         when (action) {
             is ApiActions.Updates.ClickApi -> clickedResponse(action.index)
+
+            is ApiActions.Updates.DeleteApi -> deleteAndSendResponse(action.index)
         }
     }
 
@@ -105,6 +104,28 @@ internal class AcrViewModel @Inject constructor(
     private fun clickedResponse(index: Int) {
         clickedResponse.value = responseList[index]
         _customUiState.value = responseList[index].toCustomUiState()
+    }
+
+    private fun deleteAndSendResponse(index: Int) {
+        viewModelScope.launch {
+            val response = responseList[index]
+            responseList.removeAt(index)
+            apiUiStateList.removeAt(index)
+            receiveChannel.send(response)
+        }
+    }
+
+    private fun deleteAndSendResponse(response: Response, updateResponse: Response) {
+        viewModelScope.launch {
+            val index = responseList.indexOf(response)
+
+            if (index != -1) {
+                responseList.removeAt(index)
+                apiUiStateList.removeAt(index)
+                receiveChannel.send(updateResponse)
+                initClickedResponse()
+            }
+        }
     }
 
     private fun initClickedResponse() {
@@ -211,7 +232,7 @@ internal class AcrViewModel @Inject constructor(
 
             try {
                 val updateResponse = OkHttpClient().newCall(request).execute()
-                receiveChannel.send(updateResponse)
+                deleteAndSendResponse(response, updateResponse)
                 _onBackEvent.emit(true)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -230,7 +251,7 @@ internal class AcrViewModel @Inject constructor(
                         .body(safeJson.toString().toResponseBody())
                         .build()
 
-                    receiveChannel.send(updateResponse)
+                    deleteAndSendResponse(response, updateResponse)
                 }
 
             _onBackEvent.emit(true)
