@@ -1,5 +1,6 @@
 package com.koreatlwls.app.di
 
+import com.koreatlwls.acr.AcrFactory
 import com.koreatlwls.acr.data.AcrInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -21,14 +22,12 @@ internal object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(
-        acrInterceptor: AcrInterceptor,
-    ): OkHttpClient =
+    fun provideHttpClient(): OkHttpClient =
         OkHttpClient.Builder()
             .readTimeout(TEN_SECONDS, TimeUnit.SECONDS)
             .connectTimeout(TEN_SECONDS, TimeUnit.SECONDS)
             .writeTimeout(TEN_SECONDS, TimeUnit.SECONDS)
-            .addInterceptor(acrInterceptor)
+            .addInterceptor(AcrFactory.getInterceptor())
             .addInterceptor(getLoggingInterceptor())
             .build()
 
@@ -47,11 +46,10 @@ internal object NetworkModule {
     @Singleton
     fun provideRetrofit(
         moshi: Moshi,
-        acrInterceptor: AcrInterceptor,
     ): Retrofit =
         Retrofit.Builder()
             .baseUrl("https://pokeapi.co")
-            .client(provideHttpClient(acrInterceptor))
+            .client(provideHttpClient())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
 }

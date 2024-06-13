@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.koreatlwls.app.remote.PokemonService
 import com.koreatlwls.app.remote.model.Item
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,6 +24,7 @@ internal class MainViewModel @Inject constructor(
             firstPokemons.addAll(pokemonService.getPokemons(0, 20).items)
         }
         viewModelScope.launch {
+            delay(5555)
             secondPokemons.addAll(pokemonService.getPokemons(20, 20).items)
         }
         viewModelScope.launch {
