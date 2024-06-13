@@ -47,9 +47,9 @@ class AcrInterceptor(
 
     private fun isAcrActivityRunning(context: Context): Boolean {
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val runningTasks = activityManager.getRunningTasks(1)
+        val runningTasks = activityManager.appTasks
         if (runningTasks.isNotEmpty()) {
-            val topActivity = runningTasks[0].topActivity
+            val topActivity = runningTasks[0].taskInfo.topActivity
             return topActivity?.className == AcrActivity::class.java.name
         }
         return false
