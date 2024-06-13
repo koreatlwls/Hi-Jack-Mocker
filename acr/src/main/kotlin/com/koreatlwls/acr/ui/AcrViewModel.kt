@@ -12,12 +12,11 @@ import com.koreatlwls.acr.model.ApiUiState
 import com.koreatlwls.acr.model.CustomActions
 import com.koreatlwls.acr.model.CustomUiState
 import com.koreatlwls.acr.model.JsonItem
+import com.koreatlwls.acr.util.AcrManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,13 +28,9 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
-internal class AcrViewModel @Inject constructor(
-    @Named("send") private val sendChannel: Channel<Response>,
-    @Named("receive") private val receiveChannel: Channel<Response>,
-) : ViewModel() {
+internal class AcrViewModel @Inject constructor(private val acrManager: AcrManager) : ViewModel() {
 
     private val responseList = mutableStateListOf<Response>()
     val apiUiStateList = mutableStateListOf<ApiUiState>()
@@ -53,7 +48,7 @@ internal class AcrViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            sendChannel.consumeEach {
+            acrManager.consumeEachInterceptorChannel {
                 responseList.add(it)
                 apiUiStateList.add(it.toApiUiState())
             }
@@ -116,7 +111,7 @@ internal class AcrViewModel @Inject constructor(
             val response = responseList[index]
             responseList.removeAt(index)
             apiUiStateList.removeAt(index)
-            receiveChannel.send(response)
+            acrManager.sendWithResultChannel(response)
 
             if (apiUiStateList.size == 0) {
                 _onFinishEvent.emit(true)
@@ -131,7 +126,7 @@ internal class AcrViewModel @Inject constructor(
             if (index != -1) {
                 responseList.removeAt(index)
                 apiUiStateList.removeAt(index)
-                receiveChannel.send(updateResponse)
+                acrManager.sendWithResultChannel(updateResponse)
                 initClickedResponse()
 
                 if (apiUiStateList.size == 0) {
@@ -144,7 +139,7 @@ internal class AcrViewModel @Inject constructor(
     private fun deleteAndSendAllResponse() {
         responseList.forEach { response ->
             viewModelScope.launch {
-                receiveChannel.send(response)
+                acrManager.sendWithResultChannel(response)
             }
         }
 
