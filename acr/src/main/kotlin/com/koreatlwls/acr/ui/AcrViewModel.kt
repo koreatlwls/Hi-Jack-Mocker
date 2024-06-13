@@ -115,7 +115,7 @@ internal class AcrViewModel @Inject constructor(private val interceptorManager: 
             interceptorManager.sendWithResultChannel(response)
 
             if (apiUiStateList.size == 0) {
-                _onFinishEvent.emit(true)
+                finish()
             }
         }
     }
@@ -131,7 +131,7 @@ internal class AcrViewModel @Inject constructor(private val interceptorManager: 
                 initClickedResponse()
 
                 if (apiUiStateList.size == 0) {
-                    _onFinishEvent.emit(true)
+                    finish()
                 }
             }
         }
@@ -148,7 +148,7 @@ internal class AcrViewModel @Inject constructor(private val interceptorManager: 
         apiUiStateList.clear()
 
         viewModelScope.launch {
-            _onFinishEvent.emit(true)
+            finish()
         }
     }
 
@@ -279,6 +279,13 @@ internal class AcrViewModel @Inject constructor(private val interceptorManager: 
                 }
 
             _onBackEvent.emit(true)
+        }
+    }
+
+    private fun finish() {
+        viewModelScope.launch {
+            _onFinishEvent.emit(true)
+            interceptorManager.isAcrActivityRunning.set(false)
         }
     }
 
