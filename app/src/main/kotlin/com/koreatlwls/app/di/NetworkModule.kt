@@ -1,7 +1,6 @@
 package com.koreatlwls.app.di
 
-import com.koreatlwls.acr.AcrFactory
-import com.koreatlwls.acr.data.AcrInterceptor
+import com.koreatlwls.acr.Acr
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -27,7 +26,7 @@ internal object NetworkModule {
             .readTimeout(TEN_SECONDS, TimeUnit.SECONDS)
             .connectTimeout(TEN_SECONDS, TimeUnit.SECONDS)
             .writeTimeout(TEN_SECONDS, TimeUnit.SECONDS)
-            .addInterceptor(AcrFactory.getInterceptor())
+            .addInterceptor(Acr.getInterceptor())
             .addInterceptor(getLoggingInterceptor())
             .build()
 

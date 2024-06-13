@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -22,6 +23,12 @@ class AcrDataStore(context: Context) {
         return dataStore.data.map { preferences ->
             preferences[ACR_MODE_KEY] ?: false
         }.first()
+    }
+
+    fun getAcrModeFlow(): Flow<Boolean> {
+        return dataStore.data.map { preferences ->
+            preferences[ACR_MODE_KEY] ?: false
+        }
     }
 
     companion object {

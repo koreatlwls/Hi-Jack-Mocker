@@ -20,6 +20,10 @@ internal class MainViewModel @Inject constructor(
     val thirdPokemons = mutableStateListOf<Item>()
 
     init {
+        getPokemons()
+    }
+
+    fun getPokemons() {
         viewModelScope.launch {
             firstPokemons.addAll(pokemonService.getPokemons(0, 20).items)
         }

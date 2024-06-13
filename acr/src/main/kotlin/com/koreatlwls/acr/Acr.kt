@@ -5,8 +5,9 @@ import com.koreatlwls.acr.data.AcrInterceptor
 import com.koreatlwls.acr.di.AcrManagerEntryPoint
 import com.koreatlwls.acr.util.AcrManager
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.flow.Flow
 
-object AcrFactory {
+object Acr {
     private lateinit var acrManager: AcrManager
 
     fun initialize(context: Context) {
@@ -19,5 +20,9 @@ object AcrFactory {
 
     fun getInterceptor(): AcrInterceptor = acrManager.getInterceptor()
 
-    suspend fun setAcrMode(enable: Boolean) = acrManager.setAcrMode(enable)
+    suspend fun setAcrMode(enable: Boolean) {
+        acrManager.setAcrMode(enable)
+    }
+
+    fun getAcrMode(): Flow<Boolean> = acrManager.getAcrMode()
 }
