@@ -48,6 +48,9 @@ internal class AcrViewModel @Inject constructor(
     private val _onBackEvent: MutableSharedFlow<Boolean> = MutableSharedFlow()
     val onBackEvent = _onBackEvent.asSharedFlow()
 
+    private val _onFinishEvent: MutableSharedFlow<Boolean> = MutableSharedFlow()
+    val onFinishEvent = _onFinishEvent.asSharedFlow()
+
     init {
         viewModelScope.launch {
             sendChannel.consumeEach {
@@ -114,6 +117,10 @@ internal class AcrViewModel @Inject constructor(
             responseList.removeAt(index)
             apiUiStateList.removeAt(index)
             receiveChannel.send(response)
+
+            if (apiUiStateList.size == 0) {
+                _onFinishEvent.emit(true)
+            }
         }
     }
 
@@ -126,6 +133,10 @@ internal class AcrViewModel @Inject constructor(
                 apiUiStateList.removeAt(index)
                 receiveChannel.send(updateResponse)
                 initClickedResponse()
+
+                if (apiUiStateList.size == 0) {
+                    _onFinishEvent.emit(true)
+                }
             }
         }
     }
@@ -139,6 +150,10 @@ internal class AcrViewModel @Inject constructor(
 
         responseList.clear()
         apiUiStateList.clear()
+
+        viewModelScope.launch {
+            _onFinishEvent.emit(true)
+        }
     }
 
     private fun initClickedResponse() {

@@ -8,18 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +29,7 @@ import com.koreatlwls.acr.ui.component.ApiListItem
 import com.koreatlwls.acr.util.composableActivityViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 internal fun ApiListScreen(
@@ -42,11 +39,6 @@ internal fun ApiListScreen(
 ) {
     val apiList = viewModel.apiUiStateList
     val clickedResponse by viewModel.clickedResponse
-    val onFinishEvent by remember {
-        derivedStateOf {
-            apiList.size == 0
-        }
-    }
 
     LaunchedEffect(clickedResponse) {
         if (clickedResponse != null) {
@@ -54,9 +46,11 @@ internal fun ApiListScreen(
         }
     }
 
-    LaunchedEffect(onFinishEvent) {
-        if (onFinishEvent) {
-            onFinish()
+    LaunchedEffect(Unit) {
+        viewModel.onFinishEvent.collectLatest {
+            if (it) {
+                onFinish()
+            }
         }
     }
 
