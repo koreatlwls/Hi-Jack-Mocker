@@ -64,10 +64,11 @@ internal fun ResponseScreen(
 
 @Composable
 internal fun BodyItemList(
+    modifier : Modifier = Modifier,
     items: ImmutableList<JsonItem>,
     onBodyValueChange: (key: String, value: String) -> Unit,
 ) {
-    Column {
+    Column(modifier) {
         items.forEach {
             BodyItem(
                 item = it,
@@ -147,6 +148,7 @@ private fun ExpandableBodyItems(
 
         AnimatedVisibility(visible = expanded) {
             BodyItemList(
+                modifier= Modifier.padding(start = 4.dp),
                 items = items,
                 onBodyValueChange = onBodyValueChange,
             )
