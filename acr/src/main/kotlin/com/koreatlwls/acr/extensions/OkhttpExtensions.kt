@@ -11,7 +11,7 @@ import okio.Buffer
 import org.json.JSONObject
 
 internal fun ResponseBody.extractResponseJson(): JSONObject {
-    val jsonString = this.string()
+    val jsonString = source().buffer.snapshot().utf8()
     return JSONObject(jsonString)
 }
 
