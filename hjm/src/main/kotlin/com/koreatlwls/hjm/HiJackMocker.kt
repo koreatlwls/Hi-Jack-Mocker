@@ -6,21 +6,21 @@ import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.FrameLayout
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.koreatlwls.hjm.data.HjmDataStore
 import com.koreatlwls.hjm.data.HjmInterceptor
 import com.koreatlwls.hjm.data.InterceptorManager
 import com.koreatlwls.hjm.ui.HjmActivity
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 
@@ -56,22 +56,26 @@ object HiJackMocker {
 
             override fun onActivityResumed(activity: Activity) {
                 if (activity !is HjmActivity) {
-                    addToggleButton(activity)
+                    addHjmModeButton(activity)
                 }
             }
 
             override fun onActivityPaused(activity: Activity) {}
             override fun onActivityStopped(activity: Activity) {}
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-            override fun onActivityDestroyed(activity: Activity) {}
+            override fun onActivityDestroyed(activity: Activity) {
+                if (activity is HjmActivity) {
+                    interceptorManager.isHjmActivityRunning.set(false)
+                }
+            }
         }
         )
     }
 
-    private fun addToggleButton(activity: Activity) {
+    private fun addHjmModeButton(activity: Activity) {
         val composeView = ComposeView(activity).apply {
             setContent {
-                ComposeToggleButton()
+                HjmModeButton()
             }
         }
 
@@ -80,26 +84,33 @@ object HiJackMocker {
             FrameLayout.LayoutParams.WRAP_CONTENT
         ).apply {
             gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-            topMargin = 100
+            topMargin = 150
         }
 
         activity.addContentView(composeView, params)
     }
 
     @Composable
-    private fun ComposeToggleButton() {
+    private fun HjmModeButton() {
         val checked by hjmDataStore.getHjmModeFlow().collectAsState(initial = false)
         val scope = rememberCoroutineScope()
 
-        Button(
+        IconButton(
             onClick = {
                 scope.launch {
                     hjmDataStore.setHjmMode(!checked)
                 }
-            },
-            modifier = Modifier.padding(16.dp)
+            }
         ) {
-            Text(if (checked) "ON" else "OFF")
+            Image(
+                modifier = Modifier.size(36.dp),
+                painter = painterResource(
+                    id = if (checked) R.drawable.hjm_mode_on
+                    else R.drawable.hjm_mode_off
+                ),
+                contentDescription = null,
+            )
         }
+
     }
 }
