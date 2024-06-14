@@ -83,7 +83,7 @@ private fun CustomScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = "ApiCustomRequester") },
+                title = { Text(text = "HiJackMocker") },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
                 actions = {
                     TextButton(

@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.koreatlwls.app.ui.theme.ApiCustomRequesterTheme
+import com.koreatlwls.app.ui.theme.HiJackMockerTheme
 import com.koreatlwls.hjm.HiJackMocker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ApiCustomRequesterTheme {
+            HiJackMockerTheme {
                 MainScreen()
             }
         }
