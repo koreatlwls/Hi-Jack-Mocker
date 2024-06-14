@@ -41,9 +41,6 @@ internal class HjmViewModel :
     private val _onBackEvent: MutableSharedFlow<Boolean> = MutableSharedFlow()
     val onBackEvent = _onBackEvent.asSharedFlow()
 
-    private val _onFinishEvent: MutableSharedFlow<Boolean> = MutableSharedFlow()
-    val onFinishEvent = _onFinishEvent.asSharedFlow()
-
     init {
         viewModelScope.launch {
             interceptorManager.consumeEachInterceptorChannel {
@@ -110,10 +107,6 @@ internal class HjmViewModel :
             responseList.removeAt(index)
             apiUiStateList.removeAt(index)
             interceptorManager.sendWithResultChannel(response)
-
-            if (apiUiStateList.size == 0) {
-                finish()
-            }
         }
     }
 
@@ -126,10 +119,6 @@ internal class HjmViewModel :
                 apiUiStateList.removeAt(index)
                 interceptorManager.sendWithResultChannel(updateResponse)
                 initClickedResponse()
-
-                if (apiUiStateList.size == 0) {
-                    finish()
-                }
             }
         }
     }
@@ -143,10 +132,6 @@ internal class HjmViewModel :
 
         responseList.clear()
         apiUiStateList.clear()
-
-        viewModelScope.launch {
-            finish()
-        }
     }
 
     private fun initClickedResponse() {
@@ -276,13 +261,6 @@ internal class HjmViewModel :
                 }
 
             _onBackEvent.emit(true)
-        }
-    }
-
-    private fun finish() {
-        viewModelScope.launch {
-            _onFinishEvent.emit(true)
-            interceptorManager.isHjmActivityRunning.set(false)
         }
     }
 

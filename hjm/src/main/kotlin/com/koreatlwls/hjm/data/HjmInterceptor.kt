@@ -22,7 +22,7 @@ internal class HjmInterceptor(
         val response = chain.proceed(chain.request())
         val future = CompletableFuture<Response>()
 
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             if (hjmDataStore.getHjmMode()) {
                 interceptorManager.sendWithInterceptorChannel(response)
 
