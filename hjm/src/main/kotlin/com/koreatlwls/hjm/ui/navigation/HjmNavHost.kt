@@ -10,7 +10,7 @@ import com.koreatlwls.hjm.ui.custom.CustomScreen
 import com.koreatlwls.hjm.ui.list.ApiListScreen
 
 @Composable
-internal fun hjmNavHost(onFinish: () -> Unit) {
+internal fun HjmNavHost(onFinish: () -> Unit) {
     val navController = rememberNavController()
 
     NavHost(

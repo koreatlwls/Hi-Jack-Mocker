@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
-import com.koreatlwls.hjm.ui.navigation.hjmNavHost
+import com.koreatlwls.hjm.ui.navigation.HjmNavHost
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -14,7 +14,7 @@ class HjmActivity : ComponentActivity() {
 
         setContent {
             MaterialTheme {
-                hjmNavHost(onFinish = { finish() })
+                HjmNavHost(onFinish = { finish() })
             }
         }
     }
