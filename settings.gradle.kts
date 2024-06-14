@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ApiCustomRequester"
+rootProject.name = "HiJackMocker"
 include(":app")
 include(":hjm")

@@ -10,7 +10,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.koreatlwls.apicustomrequester"
+        applicationId = "com.koreatlwls.hjm"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
