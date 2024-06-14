@@ -48,6 +48,6 @@ internal object HjmModule {
 
 @EntryPoint
 @InstallIn(SingletonComponent::class)
-interface HjmManagerEntryPoint {
+internal interface HjmManagerEntryPoint {
     fun getHjmManager(): HjmManager
 }

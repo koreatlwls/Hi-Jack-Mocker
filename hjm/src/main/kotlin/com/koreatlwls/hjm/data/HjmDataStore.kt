@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-class HjmDataStore(context: Context) {
+internal class HjmDataStore(context: Context) {
     private val dataStore: DataStore<Preferences> = context.dataStore
 
     suspend fun setHjmMode(isEnabled: Boolean) {

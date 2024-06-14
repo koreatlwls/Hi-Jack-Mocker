@@ -12,7 +12,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import java.util.concurrent.CompletableFuture
 
-class HjmInterceptor(
+internal class HjmInterceptor(
     private val context: Context,
     private val interceptorManager: InterceptorManager,
     private val hjmDataStore: HjmDataStore,
