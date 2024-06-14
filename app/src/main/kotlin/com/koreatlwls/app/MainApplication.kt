@@ -1,13 +1,13 @@
 package com.koreatlwls.app
 
 import android.app.Application
-import com.koreatlwls.acr.Acr
+import com.koreatlwls.hjm.HiJackMocker
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class MainApplication : Application(){
+class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        Acr.initialize(this)
+        HiJackMocker.initialize(this)
     }
 }

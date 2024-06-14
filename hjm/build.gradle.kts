@@ -1,25 +1,19 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "com.koreatlwls.app"
+    namespace = "com.koreatlwls.hjm"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.koreatlwls.apicustomrequester"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -44,11 +38,6 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
 }
 
 dependencies {
@@ -69,20 +58,18 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.retrofit.runtime)
-    implementation(libs.retrofit.converter.moshi)
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp.core)
+    implementation(libs.okhttp.logging.interceptor)
 
-    implementation(libs.moshi.core)
-    implementation(libs.moshi.kotlin)
-    implementation(libs.moshi.kotlin.codegen)
+    implementation(libs.kotlin.immutable)
 
     implementation(libs.hilt.android.core)
     implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
 
-    implementation(platform(libs.okhttp.bom))
-    implementation(libs.okhttp.core)
-    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.androidx.navigation.compose)
 
-    implementation(project(":hjm"))
+    implementation(libs.datastore)
+    implementation(libs.datastore.preferences)
 }

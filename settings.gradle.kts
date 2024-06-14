@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ApiCustomRequester"
 include(":app")
-include(":acr")
+include(":hjm")

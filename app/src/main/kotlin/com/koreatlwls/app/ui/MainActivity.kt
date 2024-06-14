@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.koreatlwls.acr.Acr
 import com.koreatlwls.app.ui.theme.ApiCustomRequesterTheme
+import com.koreatlwls.hjm.HiJackMocker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     val scope = rememberCoroutineScope()
-    val checked by Acr.getAcrMode().collectAsStateWithLifecycle(initialValue = false)
+    val checked by HiJackMocker.getHjmMode().collectAsStateWithLifecycle(initialValue = false)
 
     Scaffold(containerColor = Color.White) {
         Column(
@@ -61,7 +61,7 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                 checked = checked,
                 onCheckedChange = {
                     scope.launch {
-                        Acr.setAcrMode(it)
+                        HiJackMocker.setHjmMode(it)
                     }
                 }
             )

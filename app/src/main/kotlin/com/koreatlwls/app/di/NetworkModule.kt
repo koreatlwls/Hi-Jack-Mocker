@@ -1,6 +1,6 @@
 package com.koreatlwls.app.di
 
-import com.koreatlwls.acr.Acr
+import com.koreatlwls.hjm.HiJackMocker
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -26,7 +26,7 @@ internal object NetworkModule {
             .readTimeout(TEN_SECONDS, TimeUnit.SECONDS)
             .connectTimeout(TEN_SECONDS, TimeUnit.SECONDS)
             .writeTimeout(TEN_SECONDS, TimeUnit.SECONDS)
-            .addInterceptor(Acr.getInterceptor())
+            .addInterceptor(HiJackMocker.getInterceptor())
             .addInterceptor(getLoggingInterceptor())
             .build()
 
