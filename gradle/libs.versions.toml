@@ -21,6 +21,7 @@ ksp = "1.9.10-1.0.13"
 kotlinImmutable = "0.3.7"
 lifecycleRuntimeComposeAndroid = "2.8.2"
 dataStore = "1.1.1"
+coil = "2.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -62,6 +63,8 @@ kotlin-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collection
 
 datastore = { group = "androidx.datastore", name = "datastore", version.ref = "dataStore" }
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
+
+coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

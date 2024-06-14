@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.koreatlwls.app.remote.PokemonService
 import com.koreatlwls.app.remote.model.Item
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,28 +14,17 @@ internal class MainViewModel @Inject constructor(
     private val pokemonService: PokemonService,
 ) : ViewModel() {
 
-    val firstPokemons = mutableStateListOf<Item>()
-    val secondPokemons = mutableStateListOf<Item>()
-    val thirdPokemons = mutableStateListOf<Item>()
+    val pokemons = mutableStateListOf<Item>()
 
     init {
         getPokemons()
     }
 
     fun getPokemons() {
-        firstPokemons.clear()
-        secondPokemons.clear()
-        thirdPokemons.clear()
+        pokemons.clear()
 
         viewModelScope.launch {
-            firstPokemons.addAll(pokemonService.getPokemons(0, 20).items)
-        }
-        viewModelScope.launch {
-            delay(5555)
-            secondPokemons.addAll(pokemonService.getPokemons(20, 20).items)
-        }
-        viewModelScope.launch {
-            thirdPokemons.addAll(pokemonService.getPokemons(40, 20).items)
+            pokemons.addAll(pokemonService.getPokemons(0, 20).items)
         }
     }
 }

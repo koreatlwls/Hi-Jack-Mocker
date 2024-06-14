@@ -84,5 +84,7 @@ dependencies {
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging.interceptor)
 
+    implementation(libs.coil)
+
     implementation(project(":hjm"))
 }
