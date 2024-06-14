@@ -24,6 +24,10 @@ internal class MainViewModel @Inject constructor(
     }
 
     fun getPokemons() {
+        firstPokemons.clear()
+        secondPokemons.clear()
+        thirdPokemons.clear()
+
         viewModelScope.launch {
             firstPokemons.addAll(pokemonService.getPokemons(0, 20).items)
         }

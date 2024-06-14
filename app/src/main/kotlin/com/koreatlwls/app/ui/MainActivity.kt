@@ -1,7 +1,6 @@
 package com.koreatlwls.app.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -72,7 +71,6 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
             Button(
                 onClick = {
                     viewModel.getPokemons()
-                    Log.e("ABC", "ABC")
                 }
             ) {
                 Text(text = "Refresh")
