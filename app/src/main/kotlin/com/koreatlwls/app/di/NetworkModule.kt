@@ -1,6 +1,5 @@
 package com.koreatlwls.app.di
 
-import com.koreatlwls.hjm.HiJackMocker
 import com.koreatlwls.hjm.HiJackMocker.addHiJackMocker
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
