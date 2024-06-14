@@ -47,9 +47,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
-    val scope = rememberCoroutineScope()
-    val checked by HiJackMocker.getHjmMode().collectAsStateWithLifecycle(initialValue = false)
-
     Scaffold(containerColor = Color.White) {
         Column(
             modifier = Modifier
@@ -57,17 +54,6 @@ internal fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                 .padding(it)
                 .padding(8.dp),
         ) {
-            Switch(
-                checked = checked,
-                onCheckedChange = {
-                    scope.launch {
-                        HiJackMocker.setHjmMode(it)
-                    }
-                }
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
             Button(
                 onClick = {
                     viewModel.getPokemons()
