@@ -50,25 +50,26 @@ object HiJackMocker {
         this.addInterceptor(hjmInterceptor)
 
     private fun Application.addLifecycleCallbacks() {
-        registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
-            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
-            override fun onActivityStarted(activity: Activity) {}
+        registerActivityLifecycleCallbacks(
+            object : Application.ActivityLifecycleCallbacks {
+                override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+                override fun onActivityStarted(activity: Activity) {}
 
-            override fun onActivityResumed(activity: Activity) {
-                if (activity !is HjmActivity) {
-                    addHjmModeButton(activity)
+                override fun onActivityResumed(activity: Activity) {
+                    if (activity !is HjmActivity) {
+                        addHjmModeButton(activity)
+                    }
+                }
+
+                override fun onActivityPaused(activity: Activity) {}
+                override fun onActivityStopped(activity: Activity) {}
+                override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+                override fun onActivityDestroyed(activity: Activity) {
+                    if (activity is HjmActivity) {
+                        interceptorManager.isHjmActivityRunning.set(false)
+                    }
                 }
             }
-
-            override fun onActivityPaused(activity: Activity) {}
-            override fun onActivityStopped(activity: Activity) {}
-            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-            override fun onActivityDestroyed(activity: Activity) {
-                if (activity is HjmActivity) {
-                    interceptorManager.isHjmActivityRunning.set(false)
-                }
-            }
-        }
         )
     }
 
@@ -111,6 +112,5 @@ object HiJackMocker {
                 contentDescription = null,
             )
         }
-
     }
 }
