@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import com.koreatlwls.hjm.ui.HjmActivity
-import com.koreatlwls.hjm.util.InterceptorManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,10 +12,11 @@ import okhttp3.Response
 import java.util.concurrent.CompletableFuture
 
 internal class HjmInterceptor(
-    private val context: Context,
+    context: Context,
     private val interceptorManager: InterceptorManager,
     private val hjmDataStore: HjmDataStore,
 ) : Interceptor {
+    private val applicationContext = context.applicationContext
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val response = chain.proceed(chain.request())
@@ -26,7 +26,7 @@ internal class HjmInterceptor(
             if (hjmDataStore.getHjmMode()) {
                 interceptorManager.sendWithInterceptorChannel(response)
 
-                startHjmActivityIfNeeded(context)
+                startHjmActivityIfNeeded()
 
                 future.complete(interceptorManager.receiveWithResultChannel())
             } else {
@@ -37,12 +37,12 @@ internal class HjmInterceptor(
         return future.get()
     }
 
-    private fun startHjmActivityIfNeeded(context: Context) {
+    private fun startHjmActivityIfNeeded() {
         if (!interceptorManager.isHjmActivityRunning.get()) {
             interceptorManager.isHjmActivityRunning.set(true)
-            val intent = Intent(context, HjmActivity::class.java)
+            val intent = Intent(applicationContext, HjmActivity::class.java)
                 .apply { addFlags(FLAG_ACTIVITY_NEW_TASK) }
-            context.startActivity(intent)
+            applicationContext.startActivity(intent)
         }
     }
 

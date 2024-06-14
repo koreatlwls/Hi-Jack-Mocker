@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.koreatlwls.hjm.HiJackMocker.interceptorManager
 import com.koreatlwls.hjm.extensions.parseGroupedListToJSONObject
 import com.koreatlwls.hjm.extensions.toApiUiState
 import com.koreatlwls.hjm.extensions.toCustomUiState
@@ -12,8 +13,6 @@ import com.koreatlwls.hjm.model.ApiUiState
 import com.koreatlwls.hjm.model.CustomActions
 import com.koreatlwls.hjm.model.CustomUiState
 import com.koreatlwls.hjm.model.JsonItem
-import com.koreatlwls.hjm.util.InterceptorManager
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +26,8 @@ import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
-import javax.inject.Inject
 
-@HiltViewModel
-internal class HjmViewModel @Inject constructor(private val interceptorManager: InterceptorManager) :
+internal class HjmViewModel :
     ViewModel() {
 
     private val responseList = mutableStateListOf<Response>()

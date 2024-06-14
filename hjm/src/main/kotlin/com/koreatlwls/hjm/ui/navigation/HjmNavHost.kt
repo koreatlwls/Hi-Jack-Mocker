@@ -6,11 +6,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.koreatlwls.hjm.ui.HjmViewModel
 import com.koreatlwls.hjm.ui.custom.CustomScreen
 import com.koreatlwls.hjm.ui.list.ApiListScreen
 
 @Composable
-internal fun HjmNavHost(onFinish: () -> Unit) {
+internal fun HjmNavHost(
+    viewModel: HjmViewModel,
+    onFinish: () -> Unit
+) {
     val navController = rememberNavController()
 
     NavHost(
@@ -20,6 +24,7 @@ internal fun HjmNavHost(onFinish: () -> Unit) {
     ) {
         composable("apiList") {
             ApiListScreen(
+                viewModel = viewModel,
                 onNavigateToCustom = {
                     navController.navigate("custom")
                 },
@@ -29,6 +34,7 @@ internal fun HjmNavHost(onFinish: () -> Unit) {
 
         composable(route = "custom") {
             CustomScreen(
+                viewModel = viewModel,
                 onBack = {
                     navController.navigateUp()
                 }

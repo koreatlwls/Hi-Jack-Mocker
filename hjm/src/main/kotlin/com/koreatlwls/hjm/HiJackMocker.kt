@@ -1,30 +1,34 @@
 package com.koreatlwls.hjm
 
 import android.content.Context
+import com.koreatlwls.hjm.data.HjmDataStore
 import com.koreatlwls.hjm.data.HjmInterceptor
-import com.koreatlwls.hjm.di.HjmManagerEntryPoint
-import com.koreatlwls.hjm.util.HjmManager
-import dagger.hilt.android.EntryPointAccessors
+import com.koreatlwls.hjm.data.InterceptorManager
 import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
 
 object HiJackMocker {
-    private lateinit var hjmManager: HjmManager
+    internal lateinit var interceptorManager: InterceptorManager
+    private lateinit var hjmDataStore: HjmDataStore
+    private lateinit var hjmInterceptor: HjmInterceptor
 
     fun initialize(context: Context) {
-        hjmManager = EntryPointAccessors
-            .fromApplication(
-                context,
-                HjmManagerEntryPoint::class.java
-            ).getHjmManager()
+        hjmDataStore = HjmDataStore(context = context.applicationContext)
+        interceptorManager = InterceptorManager()
+        hjmInterceptor =
+            HjmInterceptor(
+                context = context.applicationContext,
+                interceptorManager = interceptorManager,
+                hjmDataStore = hjmDataStore
+            )
     }
 
-    fun OkHttpClient.Builder.addHiJackMocker() : OkHttpClient.Builder =
-        this.addInterceptor(hjmManager.getInterceptor())
+    fun OkHttpClient.Builder.addHiJackMocker(): OkHttpClient.Builder =
+        this.addInterceptor(hjmInterceptor)
 
     suspend fun setHjmMode(enable: Boolean) {
-        hjmManager.setHjmMode(enable)
+        hjmDataStore.setHjmMode(enable)
     }
 
-    fun getHjmMode(): Flow<Boolean> = hjmManager.getHjmMode()
+    fun getHjmMode(): Flow<Boolean> = hjmDataStore.getHjmModeFlow()
 }

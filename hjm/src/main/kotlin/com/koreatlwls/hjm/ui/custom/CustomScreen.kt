@@ -35,12 +35,11 @@ import com.koreatlwls.hjm.model.CustomActions
 import com.koreatlwls.hjm.model.CustomUiState
 import com.koreatlwls.hjm.ui.HjmViewModel
 import com.koreatlwls.hjm.ui.component.TabRow
-import com.koreatlwls.hjm.util.composableActivityViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 internal fun CustomScreen(
-    viewModel: HjmViewModel = composableActivityViewModel(),
+    viewModel: HjmViewModel,
     onBack: () -> Unit,
 ) {
     val customUiState by viewModel.customUiState.collectAsStateWithLifecycle(

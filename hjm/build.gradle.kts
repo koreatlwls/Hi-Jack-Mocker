@@ -1,8 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
 }
 
 android {
@@ -63,10 +61,6 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
 
     implementation(libs.kotlin.immutable)
-
-    implementation(libs.hilt.android.core)
-    implementation(libs.hilt.navigation.compose)
-    ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.navigation.compose)
 

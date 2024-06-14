@@ -26,14 +26,13 @@ import com.koreatlwls.hjm.model.ApiActions
 import com.koreatlwls.hjm.model.ApiUiState
 import com.koreatlwls.hjm.ui.HjmViewModel
 import com.koreatlwls.hjm.ui.component.ApiListItem
-import com.koreatlwls.hjm.util.composableActivityViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 internal fun ApiListScreen(
-    viewModel: HjmViewModel = composableActivityViewModel(),
+    viewModel: HjmViewModel,
     onNavigateToCustom: () -> Unit,
     onFinish: () -> Unit,
 ) {

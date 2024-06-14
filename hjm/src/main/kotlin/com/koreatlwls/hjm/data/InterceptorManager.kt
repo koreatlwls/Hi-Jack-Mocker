@@ -1,4 +1,4 @@
-package com.koreatlwls.hjm.util
+package com.koreatlwls.hjm.data
 
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.channels.Channel
