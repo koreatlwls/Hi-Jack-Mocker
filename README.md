@@ -1,7 +1,7 @@
 <h1 align="center">Hi-Jack-Mocker</h1>
 :balloon: Hi-Jack-Mocker is a project that leverages OkHttp3's interceptor to intercept and modify network requests and responses, allowing you to verify the UI easily.
 
-|Requests|Response|
+|Request|Response|
 |:------:|:-----:|
 | <img width="300" src="./screenshot/request.gif"> | <img width="300" src="./screenshot/response.gif"> |
 
