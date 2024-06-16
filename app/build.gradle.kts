@@ -85,5 +85,5 @@ dependencies {
 
     implementation(libs.coil)
 
-    implementation(project(":hjm"))
+    debugImplementation("io.github.koreatlwls:hjm:0.1.0")
 }
