@@ -1,11 +1,14 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.nexus.plugin)
+    alias(libs.plugins.nmcp)
 }
 
 android {
     namespace = "com.koreatlwls.hjm"
     compileSdk = 34
+    version = findProperty("VERSION_NAME") as String
 
     defaultConfig {
         minSdk = 24
@@ -34,7 +37,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 }
 
@@ -56,7 +59,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging.interceptor)
 
@@ -66,4 +68,15 @@ dependencies {
 
     implementation(libs.datastore)
     implementation(libs.datastore.preferences)
+}
+
+nmcp {
+    publishAllPublications {
+        val keyUsername = "SONATYPE_USERNAME"
+        val keyPassword = "SONATYPE_PASSWORD"
+        username = findProperty(keyUsername)?.toString() ?: System.getenv(keyUsername)
+        password = findProperty(keyPassword)?.toString() ?: System.getenv(keyPassword)
+
+        publicationType = "USER_MANAGED"
+    }
 }
