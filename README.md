@@ -1,5 +1,9 @@
 <h1 align="center">Hi-Jack-Mocker</h1>
+<a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a> <a href="https://central.sonatype.com/artifact/io.github.koreatlwls/hjm"><img alt="Maven Central" src="https://img.shields.io/maven-central/v/io.github.koreatlwls/hjm.svg"/></a>
+
+
 :balloon: Hi-Jack-Mocker is a project that leverages OkHttp3's interceptor to intercept and modify network requests and responses, allowing you to verify the UI easily.
+</br>
 
 |Request|Response|
 |:------:|:-----:|
@@ -7,6 +11,15 @@
 
 ## Setup
 To integrate Hi-Jack-Mocker into your Android project, follow these steps:
+
+### Adding the Dependency
+
+You can add the project dependency using the following code:
+
+```groovy
+debugImplementation("io.github.koreatlwls:hjm:0.1.0")
+```
+Note: This dependency must be added with debugImplementation and should not be included in the release environment.
 
 ### Initialize Hi-Jack-Mocker in your application:
 
