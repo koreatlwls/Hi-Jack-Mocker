@@ -2,7 +2,6 @@ package com.koreatlwls.hjm.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -191,7 +190,8 @@ private fun RowScope.TextValue(
             modifier = Modifier.fillMaxWidth(),
             value = value,
             onValueChange = onValueChange,
-            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center)
+            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+            enabled = value != "null"
         )
     }
 }

@@ -32,7 +32,7 @@ import com.koreatlwls.hjm.ui.component.KeyValueRow
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-internal fun  ResponseScreen(
+internal fun ResponseScreen(
     responseUiState: CustomUiState.ResponseUiState,
     onActions: (CustomActions) -> Unit,
 ) {
@@ -64,7 +64,7 @@ internal fun  ResponseScreen(
 
 @Composable
 internal fun BodyItemList(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     items: ImmutableList<JsonItem>,
     onBodyValueChange: (key: String, value: Any) -> Unit,
 ) {
@@ -126,10 +126,11 @@ private fun ExpandableBodyItems(
         label = ""
     )
 
-    Column(modifier = Modifier.clickable { expanded = !expanded }) {
+    Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable { expanded = !expanded }
                 .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -148,7 +149,7 @@ private fun ExpandableBodyItems(
 
         AnimatedVisibility(visible = expanded) {
             BodyItemList(
-                modifier= Modifier.padding(start = 4.dp),
+                modifier = Modifier.padding(start = 4.dp),
                 items = items,
                 onBodyValueChange = onBodyValueChange,
             )
