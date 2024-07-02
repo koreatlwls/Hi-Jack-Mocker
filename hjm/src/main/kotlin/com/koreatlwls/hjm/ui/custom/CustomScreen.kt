@@ -83,7 +83,11 @@ private fun CustomScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = "HiJackMocker") },
+                title = {
+                    Text(
+                        text = "HiJackMocker",
+                        fontSize = 16.sp
+                    ) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
                 actions = {
                     TextButton(
@@ -94,16 +98,18 @@ private fun CustomScreen(
                                 onActions(CustomActions.Updates.NewResponse)
                             }
                         },
-                        colors = ButtonDefaults.textButtonColors(contentColor = Color.Black),
                     ) {
-                        Text(text = "Send")
+                        Text(
+                            text = "Send",
+                            color = Color.Black
+                        )
                     }
                 },
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "close",
-                        modifier = Modifier.clickable { onActions(CustomActions.Navigates.Back) }
+                        modifier = Modifier.clickable { onActions(CustomActions.Navigates.Back) },
                     )
                 }
             )
