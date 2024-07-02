@@ -8,11 +8,17 @@ import okhttp3.RequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody
 import okio.Buffer
+import org.json.JSONException
 import org.json.JSONObject
 
-internal fun ResponseBody.extractResponseJson(): JSONObject {
-    val jsonString = source().buffer.snapshot().utf8()
-    return JSONObject(jsonString)
+internal fun ResponseBody.extractResponseJson(): JSONObject? {
+    return try {
+        val jsonString = source().buffer.snapshot().utf8()
+        JSONObject(jsonString)
+    } catch (e: JSONException) {
+        e.printStackTrace()
+        null
+    }
 }
 
 internal fun RequestBody.extractRequestJson(): JSONObject {
