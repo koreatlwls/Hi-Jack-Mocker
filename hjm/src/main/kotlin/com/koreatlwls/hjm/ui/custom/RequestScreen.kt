@@ -39,7 +39,7 @@ internal fun RequestScreen(
                 key = key,
                 value = apiUiState.queryValues[index],
                 onValueChange = {
-                    onActions(CustomActions.Updates.RequestQueryValue(index, it))
+                    onActions(CustomActions.Updates.RequestQueryValue(index, it as String))
                 }
             )
 
@@ -61,7 +61,7 @@ internal fun RequestScreen(
                 key = key,
                 value = requestUiState.headerValues[index],
                 onValueChange = {
-                    onActions(CustomActions.Updates.RequestHeaderValue(index, it))
+                    onActions(CustomActions.Updates.RequestHeaderValue(index, it as String))
                 }
             )
 

@@ -66,7 +66,7 @@ internal fun JSONObject?.parseJsonObjectToGroupedList(prefix: String = ""): Immu
                                     .add(
                                         JsonItem.SingleItem(
                                             arrayKey,
-                                            arrayValue.toString()
+                                            arrayValue
                                         )
                                     )
                             )
@@ -77,7 +77,7 @@ internal fun JSONObject?.parseJsonObjectToGroupedList(prefix: String = ""): Immu
             }
 
             else -> {
-                result = result.add(JsonItem.SingleItem(newKey, value.toString()))
+                result = result.add(JsonItem.SingleItem(newKey, value))
             }
         }
     }
@@ -112,7 +112,7 @@ private fun JSONArray.parseJsonArrayToGroupedList(prefix: String): ImmutableList
             }
 
             else -> {
-                result = result.add(JsonItem.SingleItem(arrayKey, arrayValue.toString()))
+                result = result.add(JsonItem.SingleItem(arrayKey, arrayValue))
             }
         }
     }

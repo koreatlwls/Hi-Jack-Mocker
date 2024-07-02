@@ -22,6 +22,7 @@ import com.koreatlwls.hjm.data.HjmInterceptor
 import com.koreatlwls.hjm.data.InterceptorManager
 import com.koreatlwls.hjm.ui.HjmActivity
 import kotlinx.coroutines.launch
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 
 object HiJackMocker {
@@ -47,7 +48,15 @@ object HiJackMocker {
     }
 
     fun OkHttpClient.Builder.addHiJackMocker(): OkHttpClient.Builder =
-        this.addInterceptor(hjmInterceptor)
+        this.addInterceptor(
+            Interceptor { chain ->
+                if (this@HiJackMocker::hjmInterceptor.isInitialized) {
+                    hjmInterceptor.intercept(chain)
+                } else {
+                    chain.proceed(chain.request())
+                }
+            }
+        )
 
     private fun Application.addLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(
