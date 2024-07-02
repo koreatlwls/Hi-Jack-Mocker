@@ -5,7 +5,6 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,7 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,7 +46,7 @@ internal fun TabRow(
 
         Box(
             modifier = Modifier
-                .clip(CircleShape)
+                .clip(RoundedCornerShape(8.dp))
                 .background(Color(0xFFF6F7F9))
         ) {
             TabRowIndicator(
@@ -59,9 +58,8 @@ internal fun TabRow(
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clip(CircleShape),
             ) {
-                items.mapIndexed { index, text ->
+                items.forEachIndexed { index, text ->
                     val isSelected = index == selectedItemIndex
                     TabRowItem(
                         isSelected = isSelected,
@@ -89,16 +87,10 @@ private fun TabRowIndicator(
                 x = indicatorOffset + 4.dp,
                 y = 4.dp
             )
-            .clip(CircleShape)
+            .clip(RoundedCornerShape(8.dp))
             .height(indicatorHeight - 4.dp * 2)
             .width(indicatorWidth - 4.dp * 2)
             .background(Color.White)
-            .border(
-                width = 1.dp,
-                color = Color(0xFFF6F7F9),
-                shape = CircleShape
-            )
-
     )
 }
 
@@ -120,7 +112,6 @@ private fun TabRowItem(
 
     Box(
         modifier = Modifier
-            .clip(CircleShape)
             .clickable {
                 onClick()
             }

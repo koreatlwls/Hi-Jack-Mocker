@@ -31,7 +31,7 @@ internal fun RequestScreen(
                 fontWeight = FontWeight.Bold,
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
         apiUiState.queryKeys.forEachIndexed { index, key ->
@@ -53,7 +53,7 @@ internal fun RequestScreen(
                 fontWeight = FontWeight.Bold,
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
         requestUiState.headerKeys.forEachIndexed { index, key ->
@@ -74,8 +74,6 @@ internal fun RequestScreen(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
             )
-
-            Spacer(modifier = Modifier.height(4.dp))
         }
 
         BodyItemList(

@@ -11,7 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -83,7 +82,11 @@ private fun CustomScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = "HiJackMocker") },
+                title = {
+                    Text(
+                        text = "HiJackMocker",
+                        fontSize = 16.sp
+                    ) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
                 actions = {
                     TextButton(
@@ -94,16 +97,18 @@ private fun CustomScreen(
                                 onActions(CustomActions.Updates.NewResponse)
                             }
                         },
-                        colors = ButtonDefaults.textButtonColors(contentColor = Color.Black),
                     ) {
-                        Text(text = "Send")
+                        Text(
+                            text = "Send",
+                            color = Color.Black
+                        )
                     }
                 },
                 navigationIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "close",
-                        modifier = Modifier.clickable { onActions(CustomActions.Navigates.Back) }
+                        modifier = Modifier.clickable { onActions(CustomActions.Navigates.Back) },
                     )
                 }
             )
