@@ -7,7 +7,7 @@ internal sealed interface JsonItem {
 
     data class SingleItem(
         override val key: String,
-        val value: String
+        val value: Any
     ) : JsonItem
 
     data class ArrayGroup(
