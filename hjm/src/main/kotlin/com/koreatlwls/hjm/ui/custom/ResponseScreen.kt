@@ -32,7 +32,7 @@ import com.koreatlwls.hjm.ui.component.KeyValueRow
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-internal fun ResponseScreen(
+internal fun  ResponseScreen(
     responseUiState: CustomUiState.ResponseUiState,
     onActions: (CustomActions) -> Unit,
 ) {
@@ -66,7 +66,7 @@ internal fun ResponseScreen(
 internal fun BodyItemList(
     modifier : Modifier = Modifier,
     items: ImmutableList<JsonItem>,
-    onBodyValueChange: (key: String, value: String) -> Unit,
+    onBodyValueChange: (key: String, value: Any) -> Unit,
 ) {
     Column(modifier) {
         items.forEach {
@@ -81,7 +81,7 @@ internal fun BodyItemList(
 @Composable
 private fun BodyItem(
     item: JsonItem,
-    onBodyValueChange: (key: String, value: String) -> Unit,
+    onBodyValueChange: (key: String, value: Any) -> Unit,
 ) {
     when (item) {
         is JsonItem.SingleItem -> {
@@ -118,7 +118,7 @@ private fun BodyItem(
 private fun ExpandableBodyItems(
     key: String,
     items: ImmutableList<JsonItem>,
-    onBodyValueChange: (key: String, value: String) -> Unit
+    onBodyValueChange: (key: String, value: Any) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
