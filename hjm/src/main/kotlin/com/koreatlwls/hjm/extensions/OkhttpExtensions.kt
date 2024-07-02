@@ -28,20 +28,29 @@ internal fun RequestBody.extractRequestJson(): JSONObject {
     return JSONObject(jsonString)
 }
 
-internal fun Response.toCustomUiState(): CustomUiState = CustomUiState(
-    apiUiState = toApiUiState(),
-    requestUiState = CustomUiState.RequestUiState(
-        headerKeys = this.request.headers.names().toImmutableList(),
-        headerValues = this.request.headers.names().toList().map { header(it) ?: "" }
-            .toImmutableList(),
-        bodyItems = this.request.body?.extractRequestJson()?.parseJsonObjectToGroupedList()
-            ?: persistentListOf()
-    ),
-    responseUiState = CustomUiState.ResponseUiState(
-        bodyItems = this.body?.extractResponseJson()?.parseJsonObjectToGroupedList()
-            ?: persistentListOf()
+internal fun Response.toCustomUiState(): CustomUiState {
+    val headers = this.request.headers
+    val headerKeys = (0 until headers.size).map { headers.name(it) }.toImmutableList()
+    val headerValues = (0 until headers.size).map { headers.value(it) }.toImmutableList()
+
+    return CustomUiState(
+        apiUiState = toApiUiState(),
+        requestUiState = CustomUiState.RequestUiState(
+            headerKeys = headerKeys,
+            headerValues = headerValues,
+            bodyItems = this.request.body
+                ?.extractRequestJson()
+                ?.parseJsonObjectToGroupedList()
+                ?: persistentListOf()
+        ),
+        responseUiState = CustomUiState.ResponseUiState(
+            bodyItems = this.body
+                ?.extractResponseJson()
+                ?.parseJsonObjectToGroupedList()
+                ?: persistentListOf()
+        )
     )
-)
+}
 
 internal fun Response.toApiUiState(): ApiUiState = ApiUiState(
     method = this.request.method,
