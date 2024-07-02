@@ -47,11 +47,11 @@ internal fun KeyValueRow(
     ) {
         Box(
             modifier = Modifier
-                .weight(1f)
+                .weight(2f)
                 .fillMaxHeight()
                 .background(
                     color = Color(0xFFF6F7F9),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(8.dp)
                 )
                 .padding(8.dp),
             contentAlignment = Alignment.Center
@@ -97,12 +97,12 @@ private fun RowScope.BooleanValue(
 ) {
     Row(
         modifier = Modifier
-            .weight(1f)
+            .weight(3f)
             .fillMaxHeight()
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.onSurface,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(8.dp)
             )
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -139,12 +139,12 @@ private fun RowScope.NumberValue(
     var textValue by remember { mutableStateOf(value.toString()) }
     Box(
         modifier = Modifier
-            .weight(1f)
+            .weight(3f)
             .fillMaxHeight()
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.onSurface,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(8.dp)
             )
             .padding(8.dp),
         contentAlignment = Alignment.Center
@@ -176,12 +176,12 @@ private fun RowScope.TextValue(
 ) {
     Box(
         modifier = Modifier
-            .weight(1f)
+            .weight(3f)
             .fillMaxHeight()
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.onSurface,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(8.dp)
             )
             .padding(8.dp),
         contentAlignment = Alignment.Center
