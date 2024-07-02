@@ -27,8 +27,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 
-internal class HjmViewModel :
-    ViewModel() {
+internal class HjmViewModel : ViewModel() {
 
     private val responseList = mutableStateListOf<Response>()
     val apiUiStateList = mutableStateListOf<ApiUiState>()
@@ -162,7 +161,7 @@ internal class HjmViewModel :
     private fun updateRequestBodyValue(
         bodyItems: ImmutableList<JsonItem>,
         key: String,
-        newValue: String
+        newValue: Any
     ) {
         val updateBodyItems = updateBodyItems(bodyItems, key, newValue)
 
@@ -174,7 +173,7 @@ internal class HjmViewModel :
     private fun updateResponseBodyValue(
         bodyItems: ImmutableList<JsonItem>,
         key: String,
-        newValue: String
+        newValue: Any
     ) {
         val updateBodyItems = updateBodyItems(bodyItems, key, newValue)
 
@@ -186,7 +185,7 @@ internal class HjmViewModel :
     private fun updateBodyItems(
         bodyItems: ImmutableList<JsonItem>,
         key: String,
-        newValue: String
+        newValue: Any
     ): ImmutableList<JsonItem> {
         val updateBodyItems = bodyItems.map { bodyItem ->
             when (bodyItem) {

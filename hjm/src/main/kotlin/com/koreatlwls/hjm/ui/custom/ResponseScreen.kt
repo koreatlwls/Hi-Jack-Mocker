@@ -64,9 +64,9 @@ internal fun ResponseScreen(
 
 @Composable
 internal fun BodyItemList(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     items: ImmutableList<JsonItem>,
-    onBodyValueChange: (key: String, value: String) -> Unit,
+    onBodyValueChange: (key: String, value: Any) -> Unit,
 ) {
     Column(modifier) {
         items.forEach {
@@ -81,7 +81,7 @@ internal fun BodyItemList(
 @Composable
 private fun BodyItem(
     item: JsonItem,
-    onBodyValueChange: (key: String, value: String) -> Unit,
+    onBodyValueChange: (key: String, value: Any) -> Unit,
 ) {
     when (item) {
         is JsonItem.SingleItem -> {
@@ -118,7 +118,7 @@ private fun BodyItem(
 private fun ExpandableBodyItems(
     key: String,
     items: ImmutableList<JsonItem>,
-    onBodyValueChange: (key: String, value: String) -> Unit
+    onBodyValueChange: (key: String, value: Any) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
@@ -126,10 +126,11 @@ private fun ExpandableBodyItems(
         label = ""
     )
 
-    Column(modifier = Modifier.clickable { expanded = !expanded }) {
+    Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable { expanded = !expanded }
                 .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -148,7 +149,7 @@ private fun ExpandableBodyItems(
 
         AnimatedVisibility(visible = expanded) {
             BodyItemList(
-                modifier= Modifier.padding(start = 4.dp),
+                modifier = Modifier.padding(start = 4.dp),
                 items = items,
                 onBodyValueChange = onBodyValueChange,
             )
