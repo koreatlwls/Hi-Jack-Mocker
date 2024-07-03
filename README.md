@@ -17,9 +17,9 @@ To integrate Hi-Jack-Mocker into your Android project, follow these steps:
 You can add the project dependency using the following code:
 
 ```groovy
-debugImplementation("io.github.koreatlwls:hjm:0.1.0")
+debugImplementation("io.github.koreatlwls:hjm:0.1.1")
 ```
-Note: This dependency must be added with debugImplementation and should not be included in the release environment.
+🚨 Note: This dependency must be added with `debugImplementation` and should not be included in the release environment.
 
 ### Initialize Hi-Jack-Mocker in your application:
 
@@ -33,7 +33,8 @@ Add the above code in the onCreate method of your Application class.
 
 ### Configure OkHttpClient:
 
-When creating your OkHttpClient instance, include the addHiJackMocker() method:
+When creating your OkHttpClient instance, include the `addHiJackMocker()` method </br>
+🚨 Note : When using HttpLoggingInterceptor, the order in which interceptors are added is important. You should add `addHiJackMocker()` first, followed by adding HttpLoggingInterceptor.
 
 ```kotlin
 @Provides
