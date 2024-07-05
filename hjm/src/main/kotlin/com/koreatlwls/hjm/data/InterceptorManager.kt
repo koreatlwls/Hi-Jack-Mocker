@@ -3,31 +3,38 @@ package com.koreatlwls.hjm.data
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
-import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okhttp3.Response
 import java.util.concurrent.atomic.AtomicBoolean
 
 class InterceptorManager {
+    private val mutex = Mutex()
     private var interceptorChannel = Channel<Response>(UNLIMITED)
     private var resultChannel = Channel<Response>(UNLIMITED)
     val isHjmActivityRunning = AtomicBoolean(false)
 
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun sendWithInterceptorChannel(response: Response) {
-        if (interceptorChannel.isClosedForSend) {
-            interceptorChannel = Channel(UNLIMITED)
+        mutex.withLock {
+            if (interceptorChannel.isClosedForSend) {
+                interceptorChannel = Channel(UNLIMITED)
+            }
+
+            interceptorChannel.send(response)
         }
-        interceptorChannel.send(response)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    suspend fun consumeEachInterceptorChannel(action: (Response) -> Unit) {
-        if (interceptorChannel.isClosedForReceive) {
-            interceptorChannel = Channel(UNLIMITED)
-        }
+    suspend fun receiveAllWithInterceptorChannel(action: (Response) -> Unit) {
+        mutex.withLock {
+            if (interceptorChannel.isClosedForReceive) {
+                interceptorChannel = Channel(UNLIMITED)
+            }
 
-        interceptorChannel.consumeEach {
-            action(it)
+            for (response in interceptorChannel) {
+                action(response)
+            }
         }
     }
 
@@ -36,6 +43,7 @@ class InterceptorManager {
         if (resultChannel.isClosedForSend) {
             resultChannel = Channel(UNLIMITED)
         }
+
         resultChannel.send(response)
     }
 

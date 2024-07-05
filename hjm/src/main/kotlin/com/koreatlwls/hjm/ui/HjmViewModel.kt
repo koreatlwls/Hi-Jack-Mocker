@@ -42,7 +42,7 @@ internal class HjmViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            interceptorManager.consumeEachInterceptorChannel {
+            interceptorManager.receiveAllWithInterceptorChannel {
                 responseList.add(it)
                 apiUiStateList.add(it.toApiUiState())
             }
