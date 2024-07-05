@@ -5,7 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
+import com.koreatlwls.hjm.HiJackMocker.interceptorManager
 import com.koreatlwls.hjm.ui.navigation.HjmNavHost
+import kotlinx.coroutines.flow.collectLatest
 
 class HjmActivity : ComponentActivity() {
 
@@ -18,8 +21,14 @@ class HjmActivity : ComponentActivity() {
             MaterialTheme {
                 HjmNavHost(
                     viewModel = hjmViewModel,
-                    onFinish = { finish() })
+                )
+            }
 
+            LaunchedEffect(Unit) {
+                hjmViewModel.onFinishEvent.collectLatest {
+                    interceptorManager.isHjmActivityRunning.set(false)
+                    finish()
+                }
             }
         }
     }

@@ -11,10 +11,7 @@ import com.koreatlwls.hjm.ui.custom.CustomScreen
 import com.koreatlwls.hjm.ui.list.ApiListScreen
 
 @Composable
-internal fun HjmNavHost(
-    viewModel: HjmViewModel,
-    onFinish: () -> Unit
-) {
+internal fun HjmNavHost(viewModel: HjmViewModel, ) {
     val navController = rememberNavController()
 
     NavHost(
@@ -28,7 +25,6 @@ internal fun HjmNavHost(
                 onNavigateToCustom = {
                     navController.navigate("custom")
                 },
-                onFinish = onFinish,
             )
         }
 
