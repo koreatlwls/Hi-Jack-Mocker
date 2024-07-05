@@ -73,11 +73,7 @@ object HiJackMocker {
                 override fun onActivityPaused(activity: Activity) {}
                 override fun onActivityStopped(activity: Activity) {}
                 override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-                override fun onActivityDestroyed(activity: Activity) {
-                    if (activity is HjmActivity) {
-                        interceptorManager.isHjmActivityRunning.set(false)
-                    }
-                }
+                override fun onActivityDestroyed(activity: Activity) {}
             }
         )
     }

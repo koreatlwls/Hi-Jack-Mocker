@@ -15,9 +15,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -34,26 +32,13 @@ import kotlinx.collections.immutable.toImmutableList
 internal fun ApiListScreen(
     viewModel: HjmViewModel,
     onNavigateToCustom: () -> Unit,
-    onFinish: () -> Unit,
 ) {
     val apiList = viewModel.apiUiStateList
     val clickedResponse by viewModel.clickedResponse
 
-    val finish by remember {
-        derivedStateOf {
-            apiList.size == 0
-        }
-    }
-
     LaunchedEffect(clickedResponse) {
         if (clickedResponse != null) {
             onNavigateToCustom()
-        }
-    }
-
-    LaunchedEffect(finish) {
-        if (finish) {
-            onFinish()
         }
     }
 

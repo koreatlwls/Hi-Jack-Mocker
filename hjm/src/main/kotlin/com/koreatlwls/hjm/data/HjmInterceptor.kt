@@ -4,12 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import com.koreatlwls.hjm.ui.HjmActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.util.concurrent.CompletableFuture
 
 internal class HjmInterceptor(
     context: Context,
@@ -18,23 +15,17 @@ internal class HjmInterceptor(
 ) : Interceptor {
     private val applicationContext = context.applicationContext
 
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val response = chain.proceed(chain.request())
-        val future = CompletableFuture<Response>()
+    override fun intercept(chain: Interceptor.Chain): Response = runBlocking {
+        var response = chain.proceed(chain.request())
 
-        CoroutineScope(Dispatchers.IO).launch {
-            if (hjmDataStore.getHjmMode()) {
-                interceptorManager.sendWithInterceptorChannel(response)
+        if (hjmDataStore.getHjmMode()) {
+            interceptorManager.sendWithInterceptorChannel(response)
 
-                startHjmActivityIfNeeded()
-
-                future.complete(interceptorManager.receiveWithResultChannel())
-            } else {
-                future.complete(response)
-            }
+            startHjmActivityIfNeeded()
+            response = interceptorManager.receiveWithResultChannel()
         }
 
-        return future.get()
+        return@runBlocking response
     }
 
     private fun startHjmActivityIfNeeded() {
