@@ -29,7 +29,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 
 internal class HjmViewModel : ViewModel() {
 
-    private val responseList = mutableStateListOf<Response>()
+    private val eventList = mutableStateListOf<Pair<String, Response>>()
     val apiUiStateList = mutableStateListOf<ApiUiState>()
 
     val clickedResponse = mutableStateOf<Response?>(null)
@@ -45,9 +45,9 @@ internal class HjmViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            interceptorManager.receiveAllWithInterceptorChannel {
-                responseList.add(it)
-                apiUiStateList.add(it.toApiUiState())
+            interceptorManager.interceptorEvent.collect {
+                eventList.add(it)
+                apiUiStateList.add(it.second.toApiUiState())
             }
         }
     }
@@ -99,18 +99,18 @@ internal class HjmViewModel : ViewModel() {
     }
 
     private fun clickedResponse(index: Int) {
-        clickedResponse.value = responseList[index]
-        _customUiState.value = responseList[index].toCustomUiState()
+        clickedResponse.value = eventList[index].second
+        _customUiState.value = eventList[index].second.toCustomUiState()
     }
 
     private fun deleteAndSendResponse(index: Int) {
         viewModelScope.launch {
-            val response = responseList[index]
-            responseList.removeAt(index)
+            val event = eventList[index]
+            eventList.removeAt(index)
             apiUiStateList.removeAt(index)
-            interceptorManager.sendWithResultChannel(response)
+            interceptorManager.sendEventAtResultEvent(event.first, event.second)
 
-            if (responseList.isEmpty()) {
+            if (eventList.isEmpty()) {
                 _onFinishEvent.emit(true)
             }
         }
@@ -118,15 +118,16 @@ internal class HjmViewModel : ViewModel() {
 
     private fun deleteAndSendResponse(response: Response, updateResponse: Response) {
         viewModelScope.launch {
-            val index = responseList.indexOf(response)
+            val event = eventList.find { it.second == response }
+            val index = eventList.indexOf(event)
 
-            if (index != -1) {
-                responseList.removeAt(index)
+            if (event != null) {
+                eventList.remove(event)
                 apiUiStateList.removeAt(index)
-                interceptorManager.sendWithResultChannel(updateResponse)
+                interceptorManager.sendEventAtResultEvent(event.first, updateResponse)
                 initClickedResponse()
 
-                if (responseList.isEmpty()) {
+                if (eventList.isEmpty()) {
                     _onFinishEvent.emit(true)
                 }
             }
@@ -135,14 +136,14 @@ internal class HjmViewModel : ViewModel() {
 
     private fun deleteAndSendAllResponse() {
         val job = viewModelScope.launch {
-            responseList.forEach { response ->
-                interceptorManager.sendWithResultChannel(response)
+            eventList.forEach { event ->
+                interceptorManager.sendEventAtResultEvent(event.first, event.second)
             }
         }
 
         viewModelScope.launch {
             job.join()
-            responseList.clear()
+            eventList.clear()
             apiUiStateList.clear()
             _onFinishEvent.emit(true)
         }
