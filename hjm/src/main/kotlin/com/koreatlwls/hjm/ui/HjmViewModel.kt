@@ -48,6 +48,7 @@ internal class HjmViewModel : ViewModel() {
             interceptorManager.interceptorEvent.collect {
                 eventList.add(it)
                 apiUiStateList.add(it.second.toApiUiState())
+                _onFinishEvent.emit(false)
             }
         }
     }
