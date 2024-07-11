@@ -17,7 +17,7 @@ To integrate Hi-Jack-Mocker into your Android project, follow these steps:
 You can add the project dependency using the following code:
 
 ```groovy
-debugImplementation("io.github.koreatlwls:hjm:0.1.3")
+debugImplementation("io.github.koreatlwls:hjm:0.1.4")
 ```
 🚨 Note: This dependency must be added with `debugImplementation` and should not be included in the release environment.
 
