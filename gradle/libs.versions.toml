@@ -24,6 +24,7 @@ dataStore = "1.1.1"
 coil = "2.6.0"
 nexusPlugin = "0.28.0"
 nmcp = "0.0.8"
+hjm = "0.1.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -63,6 +64,7 @@ datastore = { group = "androidx.datastore", name = "datastore", version.ref = "d
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
 
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+hjm = { group = "io.github.koreatlwls", name = "hjm", version.ref = "hjm" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
