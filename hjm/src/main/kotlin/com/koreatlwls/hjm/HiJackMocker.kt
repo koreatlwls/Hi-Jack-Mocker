@@ -21,7 +21,9 @@ import com.koreatlwls.hjm.data.HjmDataStore
 import com.koreatlwls.hjm.data.HjmInterceptor
 import com.koreatlwls.hjm.data.InterceptorManager
 import com.koreatlwls.hjm.ui.HjmActivity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 
@@ -104,7 +106,9 @@ object HiJackMocker {
         IconButton(
             onClick = {
                 scope.launch {
-                    hjmDataStore.setHjmMode(!checked)
+                    withContext(Dispatchers.IO){
+                        hjmDataStore.setHjmMode(!checked)
+                    }
                 }
             }
         ) {
