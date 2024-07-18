@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import android.view.Gravity
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
@@ -60,66 +61,84 @@ object HiJackMocker {
             }
         )
 
+
     private fun Application.addLifecycleCallbacks() {
-        registerActivityLifecycleCallbacks(
-            object : Application.ActivityLifecycleCallbacks {
-                override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
-                override fun onActivityStarted(activity: Activity) {}
-
-                override fun onActivityResumed(activity: Activity) {
-                    if (activity !is HjmActivity) {
-                        addHjmModeButton(activity)
-                    }
-                }
-
-                override fun onActivityPaused(activity: Activity) {}
-                override fun onActivityStopped(activity: Activity) {}
-                override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-                override fun onActivityDestroyed(activity: Activity) {}
-            }
-        )
+        registerActivityLifecycleCallbacks(ActivityLifecycleCallbacksImpl())
     }
 
-    private fun addHjmModeButton(activity: Activity) {
-        val composeView = ComposeView(activity).apply {
-            setContent {
-                HjmModeButton()
+    private class ActivityLifecycleCallbacksImpl : Application.ActivityLifecycleCallbacks {
+        private var composeView : ComposeView? = null
+
+        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?)= Unit
+
+        override fun onActivityStarted(activity: Activity) = Unit
+
+        override fun onActivityResumed(activity: Activity) {
+            if (activity !is HjmActivity) {
+                addHjmModeButton(activity)
             }
         }
 
-        val params = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-            topMargin = 150
+        override fun onActivityPaused(activity: Activity) = Unit
+
+        override fun onActivityStopped(activity: Activity) = Unit
+
+        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
+
+        override fun onActivityDestroyed(activity: Activity) {
+            if(activity !is HjmActivity){
+                removeHjmModeButton(activity)
+            }
         }
 
-        activity.addContentView(composeView, params)
-    }
-
-    @Composable
-    private fun HjmModeButton() {
-        val checked by hjmDataStore.getHjmModeFlow().collectAsState(initial = false)
-        val scope = rememberCoroutineScope()
-
-        IconButton(
-            onClick = {
-                scope.launch {
-                    withContext(Dispatchers.IO){
-                        hjmDataStore.setHjmMode(!checked)
-                    }
+        private fun addHjmModeButton(activity: Activity) {
+            composeView = ComposeView(activity).apply {
+                setContent {
+                    HjmModeButton()
                 }
             }
-        ) {
-            Image(
-                modifier = Modifier.size(36.dp),
-                painter = painterResource(
-                    id = if (checked) R.drawable.hjm_mode_on
-                    else R.drawable.hjm_mode_off
-                ),
-                contentDescription = null,
-            )
+
+            val params = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
+                topMargin = 100
+            }
+
+            activity.addContentView(composeView, params)
+        }
+
+        private fun removeHjmModeButton(activity: Activity) {
+            composeView?.let {
+                (activity.window.decorView as? ViewGroup)?.removeView(it)
+            }
+            composeView = null
+        }
+
+        @Composable
+        private fun HjmModeButton() {
+            val checked by hjmDataStore.getHjmModeFlow().collectAsState(initial = false)
+            val scope = rememberCoroutineScope()
+
+            IconButton(
+                onClick = {
+                    scope.launch {
+                        withContext(Dispatchers.IO){
+                            hjmDataStore.setHjmMode(!checked)
+                        }
+                    }
+                }
+            ) {
+                Image(
+                    modifier = Modifier.size(36.dp),
+                    painter = painterResource(
+                        id = if (checked) R.drawable.hjm_mode_on
+                        else R.drawable.hjm_mode_off
+                    ),
+                    contentDescription = null,
+                )
+            }
         }
     }
 }
