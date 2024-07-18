@@ -74,7 +74,7 @@ object HiJackMocker {
         override fun onActivityStarted(activity: Activity) = Unit
 
         override fun onActivityResumed(activity: Activity) {
-            if (activity is HjmActivity) {
+            if (activity !is HjmActivity) {
                 addHjmModeButton(activity)
             }
         }
@@ -86,7 +86,9 @@ object HiJackMocker {
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
 
         override fun onActivityDestroyed(activity: Activity) {
-            removeHjmModeButton(activity)
+            if(activity !is HjmActivity){
+                removeHjmModeButton(activity)
+            }
         }
 
         private fun addHjmModeButton(activity: Activity) {
