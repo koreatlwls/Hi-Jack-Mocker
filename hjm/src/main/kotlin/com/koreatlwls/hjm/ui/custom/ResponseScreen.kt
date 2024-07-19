@@ -209,20 +209,3 @@ private fun ExpandableBodyItems(
         )
     }
 }
-
-@Preview
-@Composable
-fun abc() {
-    MaterialTheme {
-        ExpandableBodyItems(
-            key = "regione[0]",
-            items = persistentListOf(
-                JsonItem.SingleItem(
-                    key = "comprehensam", value = "ASdf"
-
-                )
-            ),
-            onBodyValueChange = { s: String, any: Any -> }
-        )
-    }
-}
