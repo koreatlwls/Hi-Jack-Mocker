@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -75,7 +76,7 @@ private fun CustomScreen(
     onActions: (CustomActions) -> Unit,
 ) {
     val scrollState = rememberScrollState()
-    var selectedIndex by remember {
+    var selectedIndex by rememberSaveable {
         mutableIntStateOf(0)
     }
 
@@ -100,7 +101,7 @@ private fun CustomScreen(
                     ) {
                         Text(
                             text = "Send",
-                            color = Color.Black
+                            color = Color(0xFF0A84FF),
                         )
                     }
                 },
