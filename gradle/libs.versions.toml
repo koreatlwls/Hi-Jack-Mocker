@@ -1,10 +1,10 @@
 [versions]
 agp = "8.4.2"
-kotlin = "1.9.10"
+kotlin = "1.9.20"
 coreKtx = "1.13.1"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.2"
 activityCompose = "1.9.0"
 composeBom = "2024.06.00"
@@ -14,17 +14,16 @@ material3 = "1.2.1"
 
 retrofit = "2.9.0"
 okhttp = "4.12.0"
-moshi = "1.15.0"
+moshi = "1.15.1"
 hilt = "2.49"
 hiltNavigationCompose = "1.2.0"
 ksp = "1.9.10-1.0.13"
 kotlinImmutable = "0.3.7"
-lifecycleRuntimeComposeAndroid = "2.8.2"
 dataStore = "1.1.1"
 coil = "2.6.0"
 nexusPlugin = "0.28.0"
 nmcp = "0.0.8"
-hjm = "0.1.4"
+hjm = "0.1.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,7 +40,7 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "compose" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
-androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeComposeAndroid" }
+androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeKtx" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
