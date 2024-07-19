@@ -101,7 +101,7 @@ private fun CustomScreen(
                     ) {
                         Text(
                             text = "Send",
-                            color = Color(0xFF0A84FF),
+                            color = Color(0xFF007BF7),
                         )
                     }
                 },

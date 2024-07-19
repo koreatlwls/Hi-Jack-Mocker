@@ -35,7 +35,7 @@ internal fun ApiListItem(
             text = apiUiState.code.toString(),
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
-            color = if (apiUiState.code in 200..299) Color.Green else Color.Red
+            color = if (apiUiState.code in 200..299) Color(0xFF48C16A) else Color(0xFFF85752)
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -79,7 +79,7 @@ internal fun ApiListItem(
                 text = "SEND",
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
-                color = Color.Blue
+                color = Color(0xFF007BF7)
             )
         }
     }

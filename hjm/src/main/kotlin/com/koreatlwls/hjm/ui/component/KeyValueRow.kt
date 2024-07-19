@@ -101,7 +101,7 @@ private fun RowScope.BooleanValue(
             .fillMaxHeight()
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = Color.Gray,
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(8.dp),
@@ -143,7 +143,7 @@ private fun RowScope.NumberValue(
             .fillMaxHeight()
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = Color.Gray,
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(8.dp),
@@ -180,7 +180,7 @@ private fun RowScope.TextValue(
             .fillMaxHeight()
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = Color.Gray,
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(8.dp),
