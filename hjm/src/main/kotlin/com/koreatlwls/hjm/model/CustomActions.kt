@@ -14,13 +14,13 @@ internal sealed interface CustomActions {
 
         data class RequestBodyValue(
             val bodyItems: ImmutableList<JsonItem>,
-            val key: String,
+            val id: String,
             val newValue: Any,
         ) : Updates
 
         data class ResponseBodyValue(
             val bodyItems: ImmutableList<JsonItem>,
-            val key: String,
+            val id: String,
             val newValue: Any,
         ) : Updates
 

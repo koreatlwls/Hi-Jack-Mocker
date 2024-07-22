@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,11 +15,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -37,10 +33,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.koreatlwls.hjm.extensions.isParentKey
 import com.koreatlwls.hjm.model.CustomActions
 import com.koreatlwls.hjm.model.CustomUiState
 import com.koreatlwls.hjm.model.JsonItem
+import com.koreatlwls.hjm.ui.component.AddDeleteIconButton
 import com.koreatlwls.hjm.ui.component.KeyValueRow
 import kotlinx.collections.immutable.ImmutableList
 
@@ -60,11 +56,11 @@ internal fun ResponseScreen(
 
         BodyItemList(
             items = responseUiState.bodyItems,
-            onBodyValueChange = { key, value ->
+            onBodyValueChange = { id, value ->
                 onActions(
                     CustomActions.Updates.ResponseBodyValue(
                         bodyItems = responseUiState.bodyItems,
-                        key = key,
+                        id = id,
                         newValue = value
                     )
                 )
@@ -76,13 +72,16 @@ internal fun ResponseScreen(
 @Composable
 internal fun BodyItemList(
     modifier: Modifier = Modifier,
+    rootKey : String? = null,
     items: ImmutableList<JsonItem>,
-    onBodyValueChange: (key: String, value: Any) -> Unit,
+    onBodyValueChange: (id: String, value: Any) -> Unit,
 ) {
     Column(modifier = modifier.padding(top = 8.dp)) {
-        items.forEach {
+        items.forEachIndexed { index, item ->
             BodyItem(
-                item = it,
+                rootKey = rootKey ?: "",
+                item = item,
+                index = if(rootKey == null) null else index,
                 onBodyValueChange = onBodyValueChange,
             )
 
@@ -93,32 +92,41 @@ internal fun BodyItemList(
 
 @Composable
 private fun BodyItem(
+    rootKey : String,
     item: JsonItem,
-    onBodyValueChange: (key: String, value: Any) -> Unit,
+    index: Int?,
+    onBodyValueChange: (id: String, value: Any) -> Unit,
 ) {
+    val updateRootKey = if(rootKey.isEmpty()) "" else "$rootKey."
+    val updateIndex = if(index == null) "" else "[${index}]"
+
     when (item) {
         is JsonItem.SingleItem -> {
             KeyValueRow(
-                key = item.key,
+                key = "$updateRootKey${item.key}",
                 value = item.value,
+                isCanDelete = item.isCanDelete,
                 onValueChange = {
-                    onBodyValueChange(item.key, it)
+                    onBodyValueChange(item.id, it)
                 },
             )
         }
 
         is JsonItem.ArrayGroup -> {
             ExpandableBodyItems(
-                key = item.key,
+                key = "${item.key}$updateIndex",
                 items = item.items,
+                isCanAdd = item.isCanAdd,
+                isCanDelete = item.isCanDelete,
                 onBodyValueChange = onBodyValueChange
             )
         }
 
         is JsonItem.ObjectGroup -> {
             ExpandableBodyItems(
-                key = item.key,
+                key = "${item.key}$updateIndex",
                 items = item.items,
+                isCanDelete = item.isCanDelete,
                 onBodyValueChange = onBodyValueChange
             )
         }
@@ -129,7 +137,9 @@ private fun BodyItem(
 private fun ExpandableBodyItems(
     key: String,
     items: ImmutableList<JsonItem>,
-    onBodyValueChange: (key: String, value: Any) -> Unit
+    isCanAdd: Boolean = false,
+    isCanDelete: Boolean = false,
+    onBodyValueChange: (id: String, value: Any) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
@@ -166,39 +176,12 @@ private fun ExpandableBodyItems(
                 fontWeight = FontWeight.Bold,
             )
 
-            if (items.isNotEmpty()) {
-                val (backgroundColor, icon, clickEvent) = if (key.isParentKey()) {
-                    Triple(
-                        Color(0xFF007BF7),
-                        Icons.Default.Add,
-                        {},
-                    )
-                } else {
-                    Triple(
-                        Color(0xFFF85752),
-                        Icons.Default.Clear,
-                        {},
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(
-                            color = backgroundColor,
-                            shape = RoundedCornerShape(6.dp),
-                        )
-                        .clickable { clickEvent() }
-                        .padding(3.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = Color.White
-                    )
-                }
-            }
+            AddDeleteIconButton(
+                isCanAdd = isCanAdd,
+                isCanDelete = isCanDelete,
+                onAddClick = {},
+                onDeleteClick = {},
+            )
         }
     }
 
@@ -209,6 +192,7 @@ private fun ExpandableBodyItems(
     ) {
         BodyItemList(
             modifier = Modifier.padding(start = 4.dp),
+            rootKey = key,
             items = items,
             onBodyValueChange = onBodyValueChange,
         )

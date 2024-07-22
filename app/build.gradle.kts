@@ -85,5 +85,6 @@ dependencies {
 
     implementation(libs.coil)
 
-    debugImplementation(libs.hjm)
+    //debugImplementation(libs.hjm)
+    debugImplementation(project(":hjm"))
 }

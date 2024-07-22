@@ -38,12 +38,14 @@ import androidx.compose.ui.unit.sp
 internal fun KeyValueRow(
     key: String,
     value: Any,
+    isCanDelete : Boolean = false,
     onValueChange: (Any) -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Min)
+            .height(IntrinsicSize.Min),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
@@ -87,6 +89,11 @@ internal fun KeyValueRow(
                 )
             }
         }
+
+        AddDeleteIconButton(
+            isCanDelete = isCanDelete,
+            onDeleteClick = {},
+        )
     }
 }
 
@@ -203,6 +210,7 @@ private fun KeyValueRowPreview() {
         KeyValueRow(
             key = "safsdafsdafsadfsdafsadfsdafsaddfsadfsdaf",
             value = false,
+            isCanDelete = true,
             onValueChange = {}
         )
     }

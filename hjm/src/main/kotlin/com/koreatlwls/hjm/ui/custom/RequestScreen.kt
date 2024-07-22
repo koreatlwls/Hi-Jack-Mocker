@@ -78,11 +78,11 @@ internal fun RequestScreen(
 
         BodyItemList(
             items = requestUiState.bodyItems,
-            onBodyValueChange = { key, value ->
+            onBodyValueChange = { id, value ->
                 onActions(
                     CustomActions.Updates.RequestBodyValue(
                         bodyItems = requestUiState.bodyItems,
-                        key = key,
+                        id = id,
                         newValue = value
                     )
                 )

@@ -7,40 +7,39 @@ import kotlinx.collections.immutable.toPersistentList
 import org.json.JSONArray
 import org.json.JSONObject
 
-internal fun JSONObject?.parseJsonObjectToGroupedList(prefix: String = ""): ImmutableList<JsonItem> {
+internal fun JSONObject?.parseJsonObjectToGroupedList(): ImmutableList<JsonItem> {
     if (this == null) return persistentListOf()
 
     var result = persistentListOf<JsonItem>()
 
     this.keys().forEach { key ->
-        val value = this.get(key)
-        val newKey = if (prefix.isEmpty()) key else "$prefix.$key"
-
-        when (value) {
+        when (val value = this.get(key)) {
             is JSONObject -> {
                 result = result.add(
                     JsonItem.ObjectGroup(
-                        newKey,
-                        value.parseJsonObjectToGroupedList(newKey)
+                        key = key,
+                        items = value.parseJsonObjectToGroupedList()
                     )
                 )
             }
 
             is JSONArray -> {
-                var arrayGroup = JsonItem.ArrayGroup(newKey, persistentListOf())
-                for (i in 0 until value.length()) {
-                    val arrayValue = value.get(i)
-                    val arrayKey = "$newKey[$i]"
+                var arrayGroup = JsonItem.ArrayGroup(
+                    key = key,
+                    items = persistentListOf()
+                )
 
-                    when (arrayValue) {
+                for (i in 0 until value.length()) {
+                    when (val arrayValue = value.get(i)) {
                         is JSONObject -> {
                             arrayGroup = arrayGroup.copy(
                                 items = arrayGroup.items
                                     .toPersistentList()
                                     .add(
                                         JsonItem.ObjectGroup(
-                                            arrayKey,
-                                            arrayValue.parseJsonObjectToGroupedList(arrayKey)
+                                            key = key,
+                                            items = arrayValue.parseJsonObjectToGroupedList(),
+                                            isCanDelete = true,
                                         )
                                     )
                             )
@@ -52,8 +51,9 @@ internal fun JSONObject?.parseJsonObjectToGroupedList(prefix: String = ""): Immu
                                     .toPersistentList()
                                     .add(
                                         JsonItem.ArrayGroup(
-                                            arrayKey,
-                                            arrayValue.parseJsonArrayToGroupedList(arrayKey)
+                                            key = key,
+                                            items = arrayValue.parseJsonArrayToGroupedList(key),
+                                            isCanDelete = true,
                                         )
                                     )
                             )
@@ -65,8 +65,9 @@ internal fun JSONObject?.parseJsonObjectToGroupedList(prefix: String = ""): Immu
                                     .toPersistentList()
                                     .add(
                                         JsonItem.SingleItem(
-                                            arrayKey,
-                                            arrayValue
+                                            key = key,
+                                            value = arrayValue,
+                                            isCanDelete = true,
                                         )
                                     )
                             )
@@ -77,7 +78,12 @@ internal fun JSONObject?.parseJsonObjectToGroupedList(prefix: String = ""): Immu
             }
 
             else -> {
-                result = result.add(JsonItem.SingleItem(newKey, value))
+                result = result.add(
+                    JsonItem.SingleItem(
+                        key = key,
+                        value = value
+                    )
+                )
             }
         }
     }
@@ -89,15 +95,13 @@ private fun JSONArray.parseJsonArrayToGroupedList(prefix: String): ImmutableList
     var result = persistentListOf<JsonItem>()
 
     for (i in 0 until this.length()) {
-        val arrayValue = this.get(i)
-        val arrayKey = "$prefix[$i]"
-
-        when (arrayValue) {
+        when (val arrayValue = this.get(i)) {
             is JSONObject -> {
                 result = result.add(
                     JsonItem.ObjectGroup(
-                        arrayKey,
-                        arrayValue.parseJsonObjectToGroupedList(arrayKey)
+                        key = prefix,
+                        items = arrayValue.parseJsonObjectToGroupedList(),
+                        isCanDelete = true,
                     )
                 )
             }
@@ -105,14 +109,21 @@ private fun JSONArray.parseJsonArrayToGroupedList(prefix: String): ImmutableList
             is JSONArray -> {
                 result = result.add(
                     JsonItem.ArrayGroup(
-                        arrayKey,
-                        arrayValue.parseJsonArrayToGroupedList(arrayKey)
+                        key = prefix,
+                        items = arrayValue.parseJsonArrayToGroupedList(prefix),
+                        isCanDelete = true,
                     )
                 )
             }
 
             else -> {
-                result = result.add(JsonItem.SingleItem(arrayKey, arrayValue))
+                result = result.add(
+                    JsonItem.SingleItem(
+                        key = prefix,
+                        value = arrayValue,
+                        isCanDelete = true,
+                    )
+                )
             }
         }
     }

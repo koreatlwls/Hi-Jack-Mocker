@@ -85,13 +85,13 @@ internal class HjmViewModel : ViewModel() {
 
             is CustomActions.Updates.RequestBodyValue -> updateRequestBodyValue(
                 bodyItems = customUiState.value.requestUiState.bodyItems,
-                key = action.key,
+                id = action.id,
                 newValue = action.newValue
             )
 
             is CustomActions.Updates.ResponseBodyValue -> updateResponseBodyValue(
                 bodyItems = customUiState.value.responseUiState.bodyItems,
-                key = action.key,
+                id = action.id,
                 newValue = action.newValue
             )
 
@@ -177,10 +177,10 @@ internal class HjmViewModel : ViewModel() {
 
     private fun updateRequestBodyValue(
         bodyItems: ImmutableList<JsonItem>,
-        key: String,
+        id: String,
         newValue: Any
     ) {
-        val updateBodyItems = updateBodyItems(bodyItems, key, newValue)
+        val updateBodyItems = updateBodyItems(bodyItems, id, newValue)
 
         _customUiState.value = _customUiState.value.copy(
             requestUiState = _customUiState.value.requestUiState.copy(bodyItems = updateBodyItems)
@@ -189,10 +189,10 @@ internal class HjmViewModel : ViewModel() {
 
     private fun updateResponseBodyValue(
         bodyItems: ImmutableList<JsonItem>,
-        key: String,
+        id: String,
         newValue: Any
     ) {
-        val updateBodyItems = updateBodyItems(bodyItems, key, newValue)
+        val updateBodyItems = updateBodyItems(bodyItems, id, newValue)
 
         _customUiState.value = _customUiState.value.copy(
             responseUiState = CustomUiState.ResponseUiState(bodyItems = updateBodyItems)
@@ -201,13 +201,13 @@ internal class HjmViewModel : ViewModel() {
 
     private fun updateBodyItems(
         bodyItems: ImmutableList<JsonItem>,
-        key: String,
+        id: String,
         newValue: Any
     ): ImmutableList<JsonItem> {
         val updateBodyItems = bodyItems.map { bodyItem ->
             when (bodyItem) {
                 is JsonItem.SingleItem -> {
-                    if (bodyItem.key == key) {
+                    if (bodyItem.id == id) {
                         bodyItem.copy(value = newValue)
                     } else {
                         bodyItem
@@ -215,11 +215,11 @@ internal class HjmViewModel : ViewModel() {
                 }
 
                 is JsonItem.ObjectGroup -> {
-                    bodyItem.copy(items = updateBodyItems(bodyItem.items, key, newValue))
+                    bodyItem.copy(items = updateBodyItems(bodyItem.items, id, newValue))
                 }
 
                 is JsonItem.ArrayGroup -> {
-                    bodyItem.copy(items = updateBodyItems(bodyItem.items, key, newValue))
+                    bodyItem.copy(items = updateBodyItems(bodyItem.items, id, newValue))
                 }
             }
         }
