@@ -111,7 +111,6 @@ private fun JSONArray.parseJsonArrayToGroupedList(prefix: String): ImmutableList
                     JsonItem.ArrayGroup(
                         key = prefix,
                         items = arrayValue.parseJsonArrayToGroupedList(prefix),
-                        isCanDelete = true,
                     )
                 )
             }

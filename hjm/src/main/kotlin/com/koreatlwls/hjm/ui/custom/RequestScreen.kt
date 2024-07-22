@@ -77,16 +77,25 @@ internal fun RequestScreen(
         }
 
         BodyItemList(
+            rootItem = null,
+            rootKey = null,
             items = requestUiState.bodyItems,
             onBodyValueChange = { id, value ->
                 onActions(
                     CustomActions.Updates.RequestBodyValue(
-                        bodyItems = requestUiState.bodyItems,
                         id = id,
                         newValue = value
                     )
                 )
             },
+            onDeleteClick = { id, index ->
+                onActions(
+                    CustomActions.Updates.DeleteRequestBodyItem(
+                        id = id,
+                        index = index,
+                    )
+                )
+            }
         )
     }
 }

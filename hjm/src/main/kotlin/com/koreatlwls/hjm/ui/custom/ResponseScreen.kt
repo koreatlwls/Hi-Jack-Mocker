@@ -55,16 +55,25 @@ internal fun ResponseScreen(
         }
 
         BodyItemList(
+            rootItem = null,
+            rootKey = null,
             items = responseUiState.bodyItems,
             onBodyValueChange = { id, value ->
                 onActions(
                     CustomActions.Updates.ResponseBodyValue(
-                        bodyItems = responseUiState.bodyItems,
                         id = id,
                         newValue = value
                     )
                 )
             },
+            onDeleteClick = { id, index ->
+                onActions(
+                    CustomActions.Updates.DeleteResponseBodyItem(
+                        id = id,
+                        index = index,
+                    )
+                )
+            }
         )
     }
 }
@@ -72,17 +81,21 @@ internal fun ResponseScreen(
 @Composable
 internal fun BodyItemList(
     modifier: Modifier = Modifier,
-    rootKey : String? = null,
+    rootItem: JsonItem?,
+    rootKey: String?,
     items: ImmutableList<JsonItem>,
     onBodyValueChange: (id: String, value: Any) -> Unit,
+    onDeleteClick: (id: String, index: Int) -> Unit,
 ) {
     Column(modifier = modifier.padding(top = 8.dp)) {
         items.forEachIndexed { index, item ->
             BodyItem(
+                rootItem = rootItem,
                 rootKey = rootKey ?: "",
                 item = item,
-                index = if(rootKey == null) null else index,
+                index = if (rootKey == null) null else index,
                 onBodyValueChange = onBodyValueChange,
+                onDeleteClick = onDeleteClick,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -92,13 +105,14 @@ internal fun BodyItemList(
 
 @Composable
 private fun BodyItem(
-    rootKey : String,
+    rootItem: JsonItem?,
+    rootKey: String,
     item: JsonItem,
     index: Int?,
     onBodyValueChange: (id: String, value: Any) -> Unit,
+    onDeleteClick: (id: String, index: Int) -> Unit,
 ) {
-    val updateRootKey = if(rootKey.isEmpty()) "" else "$rootKey."
-    val updateIndex = if(index == null) "" else "[${index}]"
+    val updateRootKey = if (rootKey.isEmpty()) "" else "$rootKey."
 
     when (item) {
         is JsonItem.SingleItem -> {
@@ -114,20 +128,26 @@ private fun BodyItem(
 
         is JsonItem.ArrayGroup -> {
             ExpandableBodyItems(
-                key = "${item.key}$updateIndex",
+                rootItem = rootItem,
+                item = item,
+                index = index,
                 items = item.items,
                 isCanAdd = item.isCanAdd,
                 isCanDelete = item.isCanDelete,
-                onBodyValueChange = onBodyValueChange
+                onBodyValueChange = onBodyValueChange,
+                onDeleteClick = onDeleteClick,
             )
         }
 
         is JsonItem.ObjectGroup -> {
             ExpandableBodyItems(
-                key = "${item.key}$updateIndex",
+                rootItem = rootItem,
+                item = item,
+                index = index,
                 items = item.items,
                 isCanDelete = item.isCanDelete,
-                onBodyValueChange = onBodyValueChange
+                onBodyValueChange = onBodyValueChange,
+                onDeleteClick = onDeleteClick,
             )
         }
     }
@@ -135,12 +155,16 @@ private fun BodyItem(
 
 @Composable
 private fun ExpandableBodyItems(
-    key: String,
+    rootItem: JsonItem?,
+    item: JsonItem,
+    index: Int?,
     items: ImmutableList<JsonItem>,
     isCanAdd: Boolean = false,
     isCanDelete: Boolean = false,
-    onBodyValueChange: (id: String, value: Any) -> Unit
+    onBodyValueChange: (id: String, value: Any) -> Unit,
+    onDeleteClick: (id: String, index: Int) -> Unit,
 ) {
+    val updateIndex = if (index == null) "" else "[${index}]"
     var expanded by remember { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
@@ -171,7 +195,7 @@ private fun ExpandableBodyItems(
 
             Text(
                 modifier = Modifier.weight(1f),
-                text = key,
+                text = "${item.key}$updateIndex",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
             )
@@ -180,7 +204,11 @@ private fun ExpandableBodyItems(
                 isCanAdd = isCanAdd,
                 isCanDelete = isCanDelete,
                 onAddClick = {},
-                onDeleteClick = {},
+                onDeleteClick = {
+                    if (rootItem != null && index != null) {
+                        onDeleteClick(rootItem.id, index)
+                    }
+                },
             )
         }
     }
@@ -192,9 +220,11 @@ private fun ExpandableBodyItems(
     ) {
         BodyItemList(
             modifier = Modifier.padding(start = 4.dp),
-            rootKey = key,
+            rootItem = item,
+            rootKey = "${item.key}$updateIndex",
             items = items,
             onBodyValueChange = onBodyValueChange,
+            onDeleteClick = onDeleteClick,
         )
     }
 }
