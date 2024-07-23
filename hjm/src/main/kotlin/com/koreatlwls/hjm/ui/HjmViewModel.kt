@@ -88,29 +88,41 @@ internal class HjmViewModel : ViewModel() {
                 value = action.value
             )
 
-            is CustomActions.Updates.RequestBodyValue -> updateRequestBodyValue(
-                id = action.id,
-                newValue = action.newValue
-            )
+            is CustomActions.Updates.UpdateBodyValue -> {
+                if (action.isRequestBody) {
+                    updateRequestBodyValue(
+                        id = action.id,
+                        newValue = action.newValue
+                    )
+                } else {
+                    updateResponseBodyValue(
+                        id = action.id,
+                        newValue = action.newValue
+                    )
+                }
+            }
 
-            is CustomActions.Updates.ResponseBodyValue -> updateResponseBodyValue(
-                id = action.id,
-                newValue = action.newValue
-            )
+            is CustomActions.Updates.DeleteBodyItem -> {
+                if (action.isRequestBody) {
+                    deleteRequestBodyItem(
+                        id = action.id,
+                        index = action.index,
+                    )
+                } else {
+                    deleteResponseBodyItem(
+                        id = action.id,
+                        index = action.index,
+                    )
+                }
+            }
 
-            is CustomActions.Updates.DeleteRequestBodyItem -> deleteRequestBodyItem(
-                id = action.id,
-                index = action.index,
-            )
-
-            is CustomActions.Updates.DeleteResponseBodyItem -> deleteResponseBodyItem(
-                id = action.id,
-                index = action.index,
-            )
-
-            is CustomActions.Updates.UpdateRequestBodyExpanded -> updateRequestBodyExpanded(action.id)
-
-            is CustomActions.Updates.UpdateResponseBodyExpanded -> updateResponseBodyExpanded(action.id)
+            is CustomActions.Updates.UpdateBodyExpanded -> {
+                if (action.isRequestBody) {
+                    updateRequestBodyExpanded(action.id)
+                } else {
+                    updateResponseBodyExpanded(action.id)
+                }
+            }
         }
     }
 

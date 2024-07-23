@@ -16,30 +16,23 @@ internal sealed interface CustomActions {
 
         data class RequestHeaderValue(val index: Int, val value: String) : Updates
 
-        data class RequestBodyValue(
+        data class UpdateBodyValue(
+            val isRequestBody: Boolean,
             val id: String,
             val newValue: Any,
         ) : Updates
 
-        data class ResponseBodyValue(
-            val id: String,
-            val newValue: Any,
-        ) : Updates
-
-        data class DeleteRequestBodyItem(
+        data class DeleteBodyItem(
+            val isRequestBody: Boolean,
             val id: String,
             val index: Int,
         ) : Updates
 
-        data class DeleteResponseBodyItem(
-            val id: String,
-            val index: Int,
+
+        data class UpdateBodyExpanded(
+            val isRequestBody: Boolean,
+            val id: String
         ) : Updates
 
-        @JvmInline
-        value class UpdateRequestBodyExpanded(val id: String) : Updates
-
-        @JvmInline
-        value class UpdateResponseBodyExpanded(val id: String) : Updates
     }
 }

@@ -55,25 +55,8 @@ internal fun ResponseScreen(
             rootItem = null,
             rootKey = null,
             items = responseUiState.bodyItems,
-            onBodyValueChange = { id, value ->
-                onActions(
-                    CustomActions.Updates.ResponseBodyValue(
-                        id = id,
-                        newValue = value
-                    )
-                )
-            },
-            onUpdateExpanded = { id ->
-                onActions(CustomActions.Updates.UpdateResponseBodyExpanded(id))
-            },
-            onDeleteClick = { id, index ->
-                onActions(
-                    CustomActions.Updates.DeleteResponseBodyItem(
-                        id = id,
-                        index = index,
-                    )
-                )
-            }
+            isRequestBody = false,
+            onActions = onActions,
         )
     }
 }
@@ -84,9 +67,8 @@ internal fun BodyItemList(
     rootItem: JsonItem?,
     rootKey: String?,
     items: ImmutableList<JsonItem>,
-    onBodyValueChange: (id: String, value: Any) -> Unit,
-    onUpdateExpanded: (id: String) -> Unit,
-    onDeleteClick: (id: String, index: Int) -> Unit,
+    isRequestBody: Boolean,
+    onActions: (CustomActions) -> Unit,
 ) {
     Column(modifier = modifier.padding(top = 8.dp)) {
         items.forEachIndexed { index, item ->
@@ -95,9 +77,8 @@ internal fun BodyItemList(
                 rootKey = rootKey ?: "",
                 item = item,
                 index = if (rootKey == null) null else index,
-                onBodyValueChange = onBodyValueChange,
-                onUpdateExpanded = onUpdateExpanded,
-                onDeleteClick = onDeleteClick,
+                isRequestBody = isRequestBody,
+                onActions = onActions,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -111,9 +92,8 @@ private fun BodyItem(
     rootKey: String,
     item: JsonItem,
     index: Int?,
-    onBodyValueChange: (id: String, value: Any) -> Unit,
-    onUpdateExpanded: (id: String) -> Unit,
-    onDeleteClick: (id: String, index: Int) -> Unit,
+    isRequestBody: Boolean,
+    onActions: (CustomActions) -> Unit,
 ) {
     val updateRootKey = if (rootKey.isEmpty()) "" else "$rootKey."
 
@@ -124,7 +104,13 @@ private fun BodyItem(
                 value = item.value,
                 isCanDelete = item.isCanDelete,
                 onValueChange = {
-                    onBodyValueChange(item.id, it)
+                    onActions(
+                        CustomActions.Updates.UpdateBodyValue(
+                            isRequestBody = isRequestBody,
+                            id = item.id,
+                            newValue = it
+                        )
+                    )
                 },
             )
         }
@@ -138,9 +124,8 @@ private fun BodyItem(
                 expanded = item.expanded,
                 isCanAdd = item.isCanAdd,
                 isCanDelete = item.isCanDelete,
-                onBodyValueChange = onBodyValueChange,
-                onUpdateExpanded = onUpdateExpanded,
-                onDeleteClick = onDeleteClick,
+                isRequestBody = isRequestBody,
+                onActions = onActions,
             )
         }
 
@@ -152,9 +137,8 @@ private fun BodyItem(
                 expanded = item.expanded,
                 items = item.items,
                 isCanDelete = item.isCanDelete,
-                onBodyValueChange = onBodyValueChange,
-                onUpdateExpanded = onUpdateExpanded,
-                onDeleteClick = onDeleteClick,
+                isRequestBody = isRequestBody,
+                onActions = onActions
             )
         }
     }
@@ -169,9 +153,8 @@ private fun ExpandableBodyItems(
     expanded: Boolean,
     isCanDelete: Boolean,
     isCanAdd: Boolean = false,
-    onBodyValueChange: (id: String, value: Any) -> Unit,
-    onUpdateExpanded: (id: String) -> Unit,
-    onDeleteClick: (id: String, index: Int) -> Unit,
+    isRequestBody: Boolean,
+    onActions: (CustomActions) -> Unit,
 ) {
     val updateIndex = if (index == null) "" else "[${index}]"
     val rotationAngle by animateFloatAsState(
@@ -185,7 +168,14 @@ private fun ExpandableBodyItems(
                 .fillMaxWidth()
                 .height(48.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .clickable { onUpdateExpanded(item.id) }
+                .clickable {
+                    onActions(
+                        CustomActions.Updates.UpdateBodyExpanded(
+                            isRequestBody = isRequestBody,
+                            id = item.id
+                        )
+                    )
+                }
                 .background(
                     color = Color(0xFFF6F7F9),
                     shape = RoundedCornerShape(8.dp)
@@ -214,7 +204,13 @@ private fun ExpandableBodyItems(
                 onAddClick = {},
                 onDeleteClick = {
                     if (rootItem != null && index != null) {
-                        onDeleteClick(rootItem.id, index)
+                        onActions(
+                            CustomActions.Updates.DeleteBodyItem(
+                                isRequestBody = isRequestBody,
+                                id = rootItem.id,
+                                index = index
+                            )
+                        )
                     }
                 },
             )
@@ -231,9 +227,8 @@ private fun ExpandableBodyItems(
             rootItem = item,
             rootKey = "${item.key}$updateIndex",
             items = items,
-            onBodyValueChange = onBodyValueChange,
-            onUpdateExpanded = onUpdateExpanded,
-            onDeleteClick = onDeleteClick,
+            isRequestBody = isRequestBody,
+            onActions = onActions,
         )
     }
 }
