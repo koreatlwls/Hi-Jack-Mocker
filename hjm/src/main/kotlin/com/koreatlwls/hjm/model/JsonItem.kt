@@ -1,7 +1,9 @@
 package com.koreatlwls.hjm.model
 
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import java.util.UUID
+import kotlin.random.Random
 
 internal sealed interface JsonItem {
     val id: String
@@ -20,7 +22,7 @@ internal sealed interface JsonItem {
         override val key: String,
         override val isCanDelete: Boolean = false,
         val items: ImmutableList<JsonItem>,
-        val expanded : Boolean = false,
+        val expanded: Boolean = false,
     ) : JsonItem {
         val isCanAdd: Boolean = items.isNotEmpty()
     }
@@ -30,6 +32,43 @@ internal sealed interface JsonItem {
         override val key: String,
         override val isCanDelete: Boolean = false,
         val items: ImmutableList<JsonItem>,
-        val expanded : Boolean = false,
+        val expanded: Boolean = false,
     ) : JsonItem
+}
+
+internal fun JsonItem.toRandomItem(): JsonItem {
+    return when (this) {
+        is JsonItem.SingleItem -> this.copy(
+            id = UUID.randomUUID().toString(),
+            value = getRandomValue(this.value)
+        )
+
+        is JsonItem.ArrayGroup -> {
+            this.copy(
+                id = UUID.randomUUID().toString(),
+                items = this.items.map { it.toRandomItem() }.toImmutableList(),
+                expanded = true,
+            )
+        }
+
+        is JsonItem.ObjectGroup -> {
+            this.copy(
+                id = UUID.randomUUID().toString(),
+                items = this.items.map { it.toRandomItem() }.toImmutableList(),
+                expanded = true,
+            )
+        }
+    }
+}
+
+private fun getRandomValue(value: Any): Any {
+    return when (value) {
+        is Int -> Random.nextInt()
+        is String -> UUID.randomUUID().toString()
+        is Boolean -> Random.nextBoolean()
+        is Double -> Random.nextDouble()
+        is Float -> Random.nextFloat()
+        is Long -> Random.nextLong()
+        else -> value
+    }
 }

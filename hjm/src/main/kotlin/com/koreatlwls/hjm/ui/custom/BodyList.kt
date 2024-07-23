@@ -175,7 +175,14 @@ private fun ExpandableBodyItems(
             AddDeleteIconButton(
                 isCanAdd = isCanAdd,
                 isCanDelete = isCanDelete,
-                onAddClick = {},
+                onAddClick = {
+                    onActions(
+                        CustomActions.Updates.AddBodyItem(
+                            isRequestBody = isRequestBody,
+                            id = item.id
+                        )
+                    )
+                },
                 onDeleteClick = {
                     if (rootItem != null && index != null) {
                         onActions(

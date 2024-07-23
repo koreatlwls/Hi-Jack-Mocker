@@ -34,5 +34,9 @@ internal sealed interface CustomActions {
             val id: String
         ) : Updates
 
+        data class AddBodyItem(
+            val isRequestBody: Boolean,
+            val id: String,
+        ) : Updates
     }
 }
