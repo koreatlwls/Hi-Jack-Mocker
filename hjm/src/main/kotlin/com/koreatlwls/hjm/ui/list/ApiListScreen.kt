@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.sp
 import com.koreatlwls.hjm.model.ApiActions
 import com.koreatlwls.hjm.model.ApiUiState
 import com.koreatlwls.hjm.ui.HjmViewModel
-import com.koreatlwls.hjm.ui.component.ApiListItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
@@ -72,7 +71,7 @@ private fun ApiListScreen(
         LazyColumn {
             itemsIndexed(apiList) { index, item ->
                 Column {
-                    ApiListItem(
+                    ApiItem(
                         index = index,
                         apiUiState = item,
                         onActions = onActions,

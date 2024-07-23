@@ -21,9 +21,7 @@ internal fun RequestScreen(
     requestUiState: CustomUiState.RequestUiState,
     onActions: (CustomActions) -> Unit,
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         if (apiUiState.queryKeys.isNotEmpty()) {
             Text(
                 text = "Query",
@@ -76,7 +74,7 @@ internal fun RequestScreen(
             )
         }
 
-        BodyItemList(
+        BodyList(
             rootItem = null,
             rootKey = null,
             items = requestUiState.bodyItems,
