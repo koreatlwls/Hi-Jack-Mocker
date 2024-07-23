@@ -43,6 +43,9 @@ internal class HjmViewModel : ViewModel() {
     private val _onFinishEvent: MutableSharedFlow<Boolean> = MutableSharedFlow()
     val onFinishEvent = _onFinishEvent.asSharedFlow()
 
+    private val _snackBarMessage : MutableSharedFlow<String> = MutableSharedFlow()
+    val snackBarMessage = _snackBarMessage.asSharedFlow()
+
     init {
         viewModelScope.launch {
             interceptorManager.interceptorEvent.collect {
@@ -304,6 +307,10 @@ internal class HjmViewModel : ViewModel() {
         _customUiState.value = _customUiState.value.copy(
             requestUiState = _customUiState.value.requestUiState.copy(bodyItems = updateBodyItems)
         )
+
+        viewModelScope.launch {
+            _snackBarMessage.emit("Deleted Complete")
+        }
     }
 
     private fun deleteResponseBodyItem(id: String, index: Int) {
@@ -316,6 +323,10 @@ internal class HjmViewModel : ViewModel() {
         _customUiState.value = _customUiState.value.copy(
             responseUiState = CustomUiState.ResponseUiState(bodyItems = updateBodyItems)
         )
+
+        viewModelScope.launch {
+            _snackBarMessage.emit("Deleted Complete")
+        }
     }
 
     private fun deleteBodyItem(

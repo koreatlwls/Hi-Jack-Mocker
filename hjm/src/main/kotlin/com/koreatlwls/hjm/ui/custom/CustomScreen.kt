@@ -15,6 +15,8 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -22,6 +24,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -35,6 +39,7 @@ import com.koreatlwls.hjm.model.CustomUiState
 import com.koreatlwls.hjm.ui.HjmViewModel
 import com.koreatlwls.hjm.ui.component.TabRow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun CustomScreen(
@@ -44,16 +49,27 @@ internal fun CustomScreen(
     val customUiState by viewModel.customUiState.collectAsStateWithLifecycle(
         lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
     )
+    val snackBarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        viewModel.onBackEvent.collectLatest {
-            if (it) {
-                onBack()
+        scope.launch {
+            viewModel.onBackEvent.collectLatest {
+                if (it) {
+                    onBack()
+                }
+            }
+        }
+
+        scope.launch {
+            viewModel.snackBarMessage.collectLatest {
+                snackBarHostState.showSnackbar(it)
             }
         }
     }
 
     CustomScreen(
+        snackBarHostState = snackBarHostState,
         customUiState = customUiState,
         onActions = { actions ->
             when (actions) {
@@ -71,6 +87,7 @@ internal fun CustomScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CustomScreen(
+    snackBarHostState : SnackbarHostState,
     customUiState: CustomUiState,
     onActions: (CustomActions) -> Unit,
 ) {
@@ -113,7 +130,10 @@ private fun CustomScreen(
                 }
             )
         },
-        containerColor = Color.White
+        containerColor = Color.White,
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        }
     ) {
         Column(
             modifier = Modifier
