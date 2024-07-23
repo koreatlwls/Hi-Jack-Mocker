@@ -3,6 +3,7 @@ package com.koreatlwls.hjm.ui.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,11 +23,11 @@ import androidx.compose.ui.unit.dp
 fun AddDeleteIconButton(
     isCanDelete: Boolean,
     isCanAdd: Boolean = false,
-    onDeleteClick: () -> Unit ,
+    onDeleteClick: () -> Unit,
     onAddClick: () -> Unit = {},
 ) {
-    when {
-        isCanAdd -> {
+    Row {
+        if (isCanAdd) {
             AddDeleteIconButton(
                 icon = Icons.Default.Add,
                 backgroundColor = Color(0xFF007BF7),
@@ -34,7 +35,7 @@ fun AddDeleteIconButton(
             )
         }
 
-        isCanDelete -> {
+        if (isCanDelete) {
             AddDeleteIconButton(
                 icon = Icons.Default.Clear,
                 backgroundColor = Color(0xFFF85752),
