@@ -22,9 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,6 +63,9 @@ internal fun ResponseScreen(
                     )
                 )
             },
+            onUpdateExpanded = { id ->
+                onActions(CustomActions.Updates.UpdateResponseBodyExpanded(id))
+            },
             onDeleteClick = { id, index ->
                 onActions(
                     CustomActions.Updates.DeleteResponseBodyItem(
@@ -85,6 +85,7 @@ internal fun BodyItemList(
     rootKey: String?,
     items: ImmutableList<JsonItem>,
     onBodyValueChange: (id: String, value: Any) -> Unit,
+    onUpdateExpanded: (id: String) -> Unit,
     onDeleteClick: (id: String, index: Int) -> Unit,
 ) {
     Column(modifier = modifier.padding(top = 8.dp)) {
@@ -95,6 +96,7 @@ internal fun BodyItemList(
                 item = item,
                 index = if (rootKey == null) null else index,
                 onBodyValueChange = onBodyValueChange,
+                onUpdateExpanded = onUpdateExpanded,
                 onDeleteClick = onDeleteClick,
             )
 
@@ -110,6 +112,7 @@ private fun BodyItem(
     item: JsonItem,
     index: Int?,
     onBodyValueChange: (id: String, value: Any) -> Unit,
+    onUpdateExpanded: (id: String) -> Unit,
     onDeleteClick: (id: String, index: Int) -> Unit,
 ) {
     val updateRootKey = if (rootKey.isEmpty()) "" else "$rootKey."
@@ -132,9 +135,11 @@ private fun BodyItem(
                 item = item,
                 index = index,
                 items = item.items,
+                expanded = item.expanded,
                 isCanAdd = item.isCanAdd,
                 isCanDelete = item.isCanDelete,
                 onBodyValueChange = onBodyValueChange,
+                onUpdateExpanded = onUpdateExpanded,
                 onDeleteClick = onDeleteClick,
             )
         }
@@ -144,9 +149,11 @@ private fun BodyItem(
                 rootItem = rootItem,
                 item = item,
                 index = index,
+                expanded = item.expanded,
                 items = item.items,
                 isCanDelete = item.isCanDelete,
                 onBodyValueChange = onBodyValueChange,
+                onUpdateExpanded = onUpdateExpanded,
                 onDeleteClick = onDeleteClick,
             )
         }
@@ -159,13 +166,14 @@ private fun ExpandableBodyItems(
     item: JsonItem,
     index: Int?,
     items: ImmutableList<JsonItem>,
+    expanded: Boolean,
+    isCanDelete: Boolean,
     isCanAdd: Boolean = false,
-    isCanDelete: Boolean = false,
     onBodyValueChange: (id: String, value: Any) -> Unit,
+    onUpdateExpanded: (id: String) -> Unit,
     onDeleteClick: (id: String, index: Int) -> Unit,
 ) {
     val updateIndex = if (index == null) "" else "[${index}]"
-    var expanded by remember { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
         label = ""
@@ -177,7 +185,7 @@ private fun ExpandableBodyItems(
                 .fillMaxWidth()
                 .height(48.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .clickable { expanded = !expanded }
+                .clickable { onUpdateExpanded(item.id) }
                 .background(
                     color = Color(0xFFF6F7F9),
                     shape = RoundedCornerShape(8.dp)
@@ -224,6 +232,7 @@ private fun ExpandableBodyItems(
             rootKey = "${item.key}$updateIndex",
             items = items,
             onBodyValueChange = onBodyValueChange,
+            onUpdateExpanded = onUpdateExpanded,
             onDeleteClick = onDeleteClick,
         )
     }

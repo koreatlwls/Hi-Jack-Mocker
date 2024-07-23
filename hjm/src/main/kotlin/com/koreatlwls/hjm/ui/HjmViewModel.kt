@@ -43,7 +43,7 @@ internal class HjmViewModel : ViewModel() {
     private val _onFinishEvent: MutableSharedFlow<Boolean> = MutableSharedFlow()
     val onFinishEvent = _onFinishEvent.asSharedFlow()
 
-    private val _snackBarMessage : MutableSharedFlow<String> = MutableSharedFlow()
+    private val _snackBarMessage: MutableSharedFlow<String> = MutableSharedFlow()
     val snackBarMessage = _snackBarMessage.asSharedFlow()
 
     init {
@@ -107,6 +107,10 @@ internal class HjmViewModel : ViewModel() {
                 id = action.id,
                 index = action.index,
             )
+
+            is CustomActions.Updates.UpdateRequestBodyExpanded -> updateRequestBodyExpanded(action.id)
+
+            is CustomActions.Updates.UpdateResponseBodyExpanded -> updateResponseBodyExpanded(action.id)
         }
     }
 
@@ -359,4 +363,53 @@ internal class HjmViewModel : ViewModel() {
         return updateBodyItems.toPersistentList()
     }
 
+    private fun updateRequestBodyExpanded(id: String) {
+        val updateBodyItems = updateBodyExpanded(
+            bodyItems = _customUiState.value.requestUiState.bodyItems,
+            id = id,
+        )
+
+        _customUiState.value = _customUiState.value.copy(
+            requestUiState = _customUiState.value.requestUiState.copy(bodyItems = updateBodyItems)
+        )
+    }
+
+    private fun updateResponseBodyExpanded(id: String) {
+        val updateBodyItems = updateBodyExpanded(
+            bodyItems = _customUiState.value.responseUiState.bodyItems,
+            id = id
+        )
+
+        _customUiState.value = _customUiState.value.copy(
+            responseUiState = CustomUiState.ResponseUiState(bodyItems = updateBodyItems)
+        )
+    }
+
+    private fun updateBodyExpanded(
+        bodyItems: ImmutableList<JsonItem>,
+        id: String,
+    ): ImmutableList<JsonItem> {
+        val updateBodyItems = bodyItems.map { bodyItem ->
+            when (bodyItem) {
+                is JsonItem.SingleItem -> bodyItem
+                is JsonItem.ArrayGroup -> {
+                    if (bodyItem.id == id) {
+                        bodyItem.copy(expanded = !bodyItem.expanded)
+                    } else {
+                        bodyItem.copy(items = updateBodyExpanded(bodyItem.items, id))
+                    }
+                }
+
+                is JsonItem.ObjectGroup -> {
+                    if (bodyItem.id == id) {
+                        bodyItem.copy(expanded = !bodyItem.expanded)
+                    } else {
+                        bodyItem.copy(items = updateBodyExpanded(bodyItem.items, id))
+                    }
+                }
+            }
+        }
+
+        return updateBodyItems.toPersistentList()
+    }
 }

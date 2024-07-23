@@ -35,5 +35,11 @@ internal sealed interface CustomActions {
             val id: String,
             val index: Int,
         ) : Updates
+
+        @JvmInline
+        value class UpdateRequestBodyExpanded(val id: String) : Updates
+
+        @JvmInline
+        value class UpdateResponseBodyExpanded(val id: String) : Updates
     }
 }

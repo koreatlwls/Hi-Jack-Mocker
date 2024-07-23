@@ -88,6 +88,9 @@ internal fun RequestScreen(
                     )
                 )
             },
+            onUpdateExpanded = { id ->
+                onActions(CustomActions.Updates.UpdateRequestBodyExpanded(id))
+            },
             onDeleteClick = { id, index ->
                 onActions(
                     CustomActions.Updates.DeleteRequestBodyItem(

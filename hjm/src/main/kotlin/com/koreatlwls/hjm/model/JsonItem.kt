@@ -20,6 +20,7 @@ internal sealed interface JsonItem {
         override val key: String,
         override val isCanDelete: Boolean = false,
         val items: ImmutableList<JsonItem>,
+        val expanded : Boolean = false,
     ) : JsonItem {
         val isCanAdd: Boolean = items.isNotEmpty()
     }
@@ -29,5 +30,6 @@ internal sealed interface JsonItem {
         override val key: String,
         override val isCanDelete: Boolean = false,
         val items: ImmutableList<JsonItem>,
+        val expanded : Boolean = false,
     ) : JsonItem
 }
