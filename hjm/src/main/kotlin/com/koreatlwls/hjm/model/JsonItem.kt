@@ -64,7 +64,7 @@ internal fun JsonItem.toRandomItem(): JsonItem {
 private fun getRandomValue(value: Any): Any {
     return when (value) {
         is Int -> Random.nextInt()
-        is String -> UUID.randomUUID().toString()
+        is String -> value.toIntOrNull()?.let { Random.nextInt().toString() } ?: value
         is Boolean -> Random.nextBoolean()
         is Double -> Random.nextDouble()
         is Float -> Random.nextFloat()
