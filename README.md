@@ -17,9 +17,9 @@ To integrate Hi-Jack-Mocker into your Android project, follow these steps:
 You can add the project dependency using the following code:
 
 ```groovy
-debugImplementation("io.github.koreatlwls:hjm:0.1.7")
+debugImplementation("io.github.koreatlwls:hjm:0.1.8")
 ```
-🚨 Note: This dependency must be added with `debugImplementation` and should not be included in the release environment.
+> Note: This dependency must be added with `debugImplementation` and should not be included in the release environment.
 
 ### Initialize Hi-Jack-Mocker in your application:
 
@@ -34,7 +34,8 @@ Add the above code in the onCreate method of your Application class.
 ### Configure OkHttpClient:
 
 When creating your OkHttpClient instance, include the `addHiJackMocker()` method </br>
-🚨 Note : When using HttpLoggingInterceptor, the order in which interceptors are added is important. You should add `addHiJackMocker()` first, followed by adding HttpLoggingInterceptor.
+> Note: When using HttpLoggingInterceptor, the order in which interceptors are added is important.</br> 
+> You should add `addHiJackMocker()` first, followed by adding HttpLoggingInterceptor.
 
 ```kotlin
 @Provides
@@ -49,12 +50,22 @@ fun provideHttpClient(): OkHttpClient =
         .build()
 ```
 ## Usage
+### Hjm Mode
 To enable or disable the Hi-Jack-Mocker mode, use the ImageButton provided at the top of every activity. 
 
 This allows you to control whether the hjm mode is active.
 |Mode Off|Mode On|
 |:------:|:-----:|
 | <img width="200" src="./screenshot/hjm_mode_off.png"> | <img width="200" src="./screenshot/hjm_mode_on.png"> |
+
+### Add/Delete
+The Add/Delete function in HJM allows for adding or deleting values in a JsonArray. 
+> Note: When adding a value, it is inserted as the first item with a random value, except when the value is of String type.
+
+|Add|Delete|
+|:------:|:-----:|
+| <img width="300" src="./screenshot/add.gif"> | <img width="300" src="./screenshot/delete.gif"> |
+
 
 # License
 ```xml
