@@ -42,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = libs.versions.kotlinComposeCompiler.get()
     }
     packaging {
         resources {
@@ -85,5 +85,6 @@ dependencies {
 
     implementation(libs.coil)
 
-    debugImplementation(libs.hjm)
+    //debugImplementation(libs.hjm)
+    debugImplementation(project(":hjm"))
 }

@@ -1,4 +1,4 @@
-package com.koreatlwls.hjm.ui.component
+package com.koreatlwls.hjm.ui.list
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,7 +21,7 @@ import com.koreatlwls.hjm.model.ApiActions
 import com.koreatlwls.hjm.model.ApiUiState
 
 @Composable
-internal fun ApiListItem(
+internal fun ApiItem(
     index: Int,
     apiUiState: ApiUiState,
     onActions: (ApiActions) -> Unit,
@@ -35,7 +35,7 @@ internal fun ApiListItem(
             text = apiUiState.code.toString(),
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
-            color = if (apiUiState.code in 200..299) Color.Green else Color.Red
+            color = if (apiUiState.code in 200..299) Color(0xFF48C16A) else Color(0xFFF85752)
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -72,14 +72,12 @@ internal fun ApiListItem(
         }
 
 
-        TextButton(
-            onClick = { onActions(ApiActions.Updates.DeleteApi(index)) }
-        ) {
+        TextButton(onClick = { onActions(ApiActions.Updates.DeleteApi(index)) }) {
             Text(
                 text = "SEND",
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
-                color = Color.Blue
+                color = Color(0xFF007BF7)
             )
         }
     }
@@ -87,9 +85,9 @@ internal fun ApiListItem(
 
 @Preview
 @Composable
-private fun ApiListItemPreview() {
+private fun ApiItemPreview() {
     MaterialTheme {
-        ApiListItem(
+        ApiItem(
             index = 1,
             apiUiState = ApiUiState(
                 method = "GET",

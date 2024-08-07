@@ -13,7 +13,9 @@ import com.koreatlwls.hjm.model.ApiUiState
 import com.koreatlwls.hjm.model.CustomActions
 import com.koreatlwls.hjm.model.CustomUiState
 import com.koreatlwls.hjm.model.JsonItem
+import com.koreatlwls.hjm.model.toRandomItem
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -42,6 +44,9 @@ internal class HjmViewModel : ViewModel() {
 
     private val _onFinishEvent: MutableSharedFlow<Boolean> = MutableSharedFlow()
     val onFinishEvent = _onFinishEvent.asSharedFlow()
+
+    private val _snackBarMessage: MutableSharedFlow<String> = MutableSharedFlow()
+    val snackBarMessage = _snackBarMessage.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -73,29 +78,61 @@ internal class HjmViewModel : ViewModel() {
                 sendNewResponse(safeResponse)
             }
 
-            is CustomActions.Updates.RequestHeaderValue -> updateRequestHeaderValue(
-                index = action.index,
-                value = action.value
-            )
+            CustomActions.Updates.InitClickApi -> initClickedResponse()
 
             is CustomActions.Updates.RequestQueryValue -> updateRequestQueryValue(
                 index = action.index,
                 value = action.value
             )
 
-            is CustomActions.Updates.RequestBodyValue -> updateRequestBodyValue(
-                bodyItems = customUiState.value.requestUiState.bodyItems,
-                key = action.key,
-                newValue = action.newValue
+            is CustomActions.Updates.RequestHeaderValue -> updateRequestHeaderValue(
+                index = action.index,
+                value = action.value
             )
 
-            is CustomActions.Updates.ResponseBodyValue -> updateResponseBodyValue(
-                bodyItems = customUiState.value.responseUiState.bodyItems,
-                key = action.key,
-                newValue = action.newValue
-            )
+            is CustomActions.Updates.UpdateBodyValue -> {
+                if (action.isRequestBody) {
+                    updateRequestBodyValue(
+                        id = action.id,
+                        newValue = action.newValue
+                    )
+                } else {
+                    updateResponseBodyValue(
+                        id = action.id,
+                        newValue = action.newValue
+                    )
+                }
+            }
 
-            CustomActions.Updates.InitClickApi -> initClickedResponse()
+            is CustomActions.Updates.DeleteBodyItem -> {
+                if (action.isRequestBody) {
+                    deleteRequestBodyItem(
+                        id = action.id,
+                        index = action.index,
+                    )
+                } else {
+                    deleteResponseBodyItem(
+                        id = action.id,
+                        index = action.index,
+                    )
+                }
+            }
+
+            is CustomActions.Updates.UpdateBodyExpanded -> {
+                if (action.isRequestBody) {
+                    updateRequestBodyExpanded(action.id)
+                } else {
+                    updateResponseBodyExpanded(action.id)
+                }
+            }
+
+            is CustomActions.Updates.AddBodyItem -> {
+                if (action.isRequestBody) {
+                    addRequestBodyItem(action.id)
+                } else {
+                    addResponseBodyItem(action.id)
+                }
+            }
         }
     }
 
@@ -117,24 +154,6 @@ internal class HjmViewModel : ViewModel() {
         }
     }
 
-    private fun deleteAndSendResponse(response: Response, updateResponse: Response) {
-        viewModelScope.launch {
-            val event = eventList.find { it.second == response }
-            val index = eventList.indexOf(event)
-
-            if (event != null) {
-                eventList.remove(event)
-                apiUiStateList.removeAt(index)
-                interceptorManager.sendEventAtResultEvent(event.first, updateResponse)
-                initClickedResponse()
-
-                if (eventList.isEmpty()) {
-                    _onFinishEvent.emit(true)
-                }
-            }
-        }
-    }
-
     private fun deleteAndSendAllResponse() {
         val job = viewModelScope.launch {
             eventList.forEach { event ->
@@ -148,82 +167,6 @@ internal class HjmViewModel : ViewModel() {
             apiUiStateList.clear()
             _onFinishEvent.emit(true)
         }
-    }
-
-    private fun initClickedResponse() {
-        clickedResponse.value = null
-        _customUiState.value = CustomUiState()
-    }
-
-    private fun updateRequestQueryValue(index: Int, value: String) {
-        val queryValues = _customUiState.value.apiUiState.queryValues
-            .toPersistentList()
-            .removeAt(index)
-            .add(index, value)
-        _customUiState.value = _customUiState.value.copy(
-            apiUiState = _customUiState.value.apiUiState.copy(queryValues = queryValues)
-        )
-    }
-
-    private fun updateRequestHeaderValue(index: Int, value: String) {
-        val headerValues = _customUiState.value.requestUiState.headerValues
-            .toPersistentList()
-            .removeAt(index)
-            .add(index, value)
-        _customUiState.value = _customUiState.value.copy(
-            requestUiState = _customUiState.value.requestUiState.copy(headerValues = headerValues)
-        )
-    }
-
-    private fun updateRequestBodyValue(
-        bodyItems: ImmutableList<JsonItem>,
-        key: String,
-        newValue: Any
-    ) {
-        val updateBodyItems = updateBodyItems(bodyItems, key, newValue)
-
-        _customUiState.value = _customUiState.value.copy(
-            requestUiState = _customUiState.value.requestUiState.copy(bodyItems = updateBodyItems)
-        )
-    }
-
-    private fun updateResponseBodyValue(
-        bodyItems: ImmutableList<JsonItem>,
-        key: String,
-        newValue: Any
-    ) {
-        val updateBodyItems = updateBodyItems(bodyItems, key, newValue)
-
-        _customUiState.value = _customUiState.value.copy(
-            responseUiState = CustomUiState.ResponseUiState(bodyItems = updateBodyItems)
-        )
-    }
-
-    private fun updateBodyItems(
-        bodyItems: ImmutableList<JsonItem>,
-        key: String,
-        newValue: Any
-    ): ImmutableList<JsonItem> {
-        val updateBodyItems = bodyItems.map { bodyItem ->
-            when (bodyItem) {
-                is JsonItem.SingleItem -> {
-                    if (bodyItem.key == key) {
-                        bodyItem.copy(value = newValue)
-                    } else {
-                        bodyItem
-                    }
-                }
-
-                is JsonItem.ObjectGroup -> {
-                    bodyItem.copy(items = updateBodyItems(bodyItem.items, key, newValue))
-                }
-
-                is JsonItem.ArrayGroup -> {
-                    bodyItem.copy(items = updateBodyItems(bodyItem.items, key, newValue))
-                }
-            }
-        }
-        return updateBodyItems.toPersistentList()
     }
 
     private fun sendNewRequest(response: Response) {
@@ -280,4 +223,266 @@ internal class HjmViewModel : ViewModel() {
         }
     }
 
+    private fun deleteAndSendResponse(response: Response, updateResponse: Response) {
+        viewModelScope.launch {
+            val event = eventList.find { it.second == response }
+            val index = eventList.indexOf(event)
+
+            if (event != null) {
+                eventList.remove(event)
+                apiUiStateList.removeAt(index)
+                interceptorManager.sendEventAtResultEvent(event.first, updateResponse)
+                initClickedResponse()
+
+                if (eventList.isEmpty()) {
+                    _onFinishEvent.emit(true)
+                }
+            }
+        }
+    }
+
+    private fun initClickedResponse() {
+        clickedResponse.value = null
+        _customUiState.value = CustomUiState()
+    }
+
+    private fun updateRequestQueryValue(index: Int, value: String) {
+        val queryValues = _customUiState.value.apiUiState.queryValues
+            .toPersistentList()
+            .removeAt(index)
+            .add(index, value)
+        _customUiState.value = _customUiState.value.copy(
+            apiUiState = _customUiState.value.apiUiState.copy(queryValues = queryValues)
+        )
+    }
+
+    private fun updateRequestHeaderValue(index: Int, value: String) {
+        val headerValues = _customUiState.value.requestUiState.headerValues
+            .toPersistentList()
+            .removeAt(index)
+            .add(index, value)
+        _customUiState.value = _customUiState.value.copy(
+            requestUiState = _customUiState.value.requestUiState.copy(headerValues = headerValues)
+        )
+    }
+
+    private fun updateRequestBodyValue(
+        id: String,
+        newValue: Any
+    ) {
+        val updateBodyItems = updateBodyItems(
+            bodyItems = _customUiState.value.requestUiState.bodyItems,
+            id = id,
+            newValue = newValue
+        )
+
+        _customUiState.value = _customUiState.value.copy(
+            requestUiState = _customUiState.value.requestUiState.copy(bodyItems = updateBodyItems)
+        )
+    }
+
+    private fun updateResponseBodyValue(
+        id: String,
+        newValue: Any
+    ) {
+        val updateBodyItems = updateBodyItems(
+            bodyItems = _customUiState.value.responseUiState.bodyItems,
+            id = id,
+            newValue = newValue
+        )
+
+        _customUiState.value = _customUiState.value.copy(
+            responseUiState = CustomUiState.ResponseUiState(bodyItems = updateBodyItems)
+        )
+    }
+
+    private fun updateBodyItems(
+        bodyItems: ImmutableList<JsonItem>,
+        id: String,
+        newValue: Any
+    ): ImmutableList<JsonItem> {
+        val updateBodyItems = bodyItems.map { bodyItem ->
+            when (bodyItem) {
+                is JsonItem.SingleItem -> {
+                    if (bodyItem.id == id) {
+                        bodyItem.copy(value = newValue)
+                    } else {
+                        bodyItem
+                    }
+                }
+
+                is JsonItem.ObjectGroup -> {
+                    bodyItem.copy(items = updateBodyItems(bodyItem.items, id, newValue))
+                }
+
+                is JsonItem.ArrayGroup -> {
+                    bodyItem.copy(items = updateBodyItems(bodyItem.items, id, newValue))
+                }
+            }
+        }
+        return updateBodyItems.toImmutableList()
+    }
+
+    private fun deleteRequestBodyItem(id: String, index: Int) {
+        val updateBodyItems = deleteBodyItem(
+            bodyItems = _customUiState.value.requestUiState.bodyItems,
+            id = id,
+            index = index,
+        )
+
+        _customUiState.value = _customUiState.value.copy(
+            requestUiState = _customUiState.value.requestUiState.copy(bodyItems = updateBodyItems)
+        )
+
+        viewModelScope.launch {
+            _snackBarMessage.emit("Deleted Complete")
+        }
+    }
+
+    private fun deleteResponseBodyItem(id: String, index: Int) {
+        val updateBodyItems = deleteBodyItem(
+            bodyItems = _customUiState.value.responseUiState.bodyItems,
+            id = id,
+            index = index,
+        )
+
+        _customUiState.value = _customUiState.value.copy(
+            responseUiState = CustomUiState.ResponseUiState(bodyItems = updateBodyItems)
+        )
+
+        viewModelScope.launch {
+            _snackBarMessage.emit("Deleted Complete")
+        }
+    }
+
+    private fun deleteBodyItem(
+        bodyItems: ImmutableList<JsonItem>,
+        id: String,
+        index: Int,
+    ): ImmutableList<JsonItem> {
+        val updateBodyItems = bodyItems.map { bodyItem ->
+            when (bodyItem) {
+                is JsonItem.SingleItem -> {
+                    bodyItem
+                }
+
+                is JsonItem.ObjectGroup -> {
+                    bodyItem.copy(items = deleteBodyItem(bodyItem.items, id, index))
+                }
+
+                is JsonItem.ArrayGroup -> {
+                    if (bodyItem.id == id) {
+                        bodyItem.copy(
+                            items = bodyItem.items.toPersistentList().removeAt(index)
+                        )
+                    } else {
+                        bodyItem.copy(items = deleteBodyItem(bodyItem.items, id, index))
+                    }
+                }
+            }
+        }
+
+        return updateBodyItems.toImmutableList()
+    }
+
+    private fun updateRequestBodyExpanded(id: String) {
+        val updateBodyItems = updateBodyExpanded(
+            bodyItems = _customUiState.value.requestUiState.bodyItems,
+            id = id,
+        )
+
+        _customUiState.value = _customUiState.value.copy(
+            requestUiState = _customUiState.value.requestUiState.copy(bodyItems = updateBodyItems)
+        )
+    }
+
+    private fun updateResponseBodyExpanded(id: String) {
+        val updateBodyItems = updateBodyExpanded(
+            bodyItems = _customUiState.value.responseUiState.bodyItems,
+            id = id
+        )
+
+        _customUiState.value = _customUiState.value.copy(
+            responseUiState = CustomUiState.ResponseUiState(bodyItems = updateBodyItems)
+        )
+    }
+
+    private fun updateBodyExpanded(
+        bodyItems: ImmutableList<JsonItem>,
+        id: String,
+    ): ImmutableList<JsonItem> {
+        val updateBodyItems = bodyItems.map { bodyItem ->
+            when (bodyItem) {
+                is JsonItem.SingleItem -> bodyItem
+                is JsonItem.ArrayGroup -> {
+                    if (bodyItem.id == id) {
+                        bodyItem.copy(expanded = !bodyItem.expanded)
+                    } else {
+                        bodyItem.copy(items = updateBodyExpanded(bodyItem.items, id))
+                    }
+                }
+
+                is JsonItem.ObjectGroup -> {
+                    if (bodyItem.id == id) {
+                        bodyItem.copy(expanded = !bodyItem.expanded)
+                    } else {
+                        bodyItem.copy(items = updateBodyExpanded(bodyItem.items, id))
+                    }
+                }
+            }
+        }
+
+        return updateBodyItems.toImmutableList()
+    }
+
+    private fun addRequestBodyItem(id: String) {
+        val updateBodyItems = addBodyItem(
+            bodyItems = _customUiState.value.responseUiState.bodyItems,
+            id = id
+        )
+
+        _customUiState.value = _customUiState.value.copy(
+            requestUiState = _customUiState.value.requestUiState.copy(bodyItems = updateBodyItems)
+        )
+    }
+
+    private fun addResponseBodyItem(id: String) {
+        val updateBodyItems = addBodyItem(
+            bodyItems = _customUiState.value.responseUiState.bodyItems,
+            id = id
+        )
+
+        _customUiState.value = _customUiState.value.copy(
+            responseUiState = CustomUiState.ResponseUiState(bodyItems = updateBodyItems)
+        )
+    }
+
+    private fun addBodyItem(
+        bodyItems: ImmutableList<JsonItem>,
+        id: String,
+    ): ImmutableList<JsonItem> {
+        val updateBodyItems = bodyItems.map { bodyItem ->
+            when (bodyItem) {
+                is JsonItem.SingleItem -> bodyItem
+                is JsonItem.ObjectGroup -> bodyItem.copy(items = addBodyItem(bodyItem.items, id))
+                is JsonItem.ArrayGroup -> {
+                    if (bodyItem.id == id) {
+                        bodyItem.copy(
+                            expanded = true,
+                            items = bodyItem.items
+                                .toPersistentList()
+                                .add(
+                                    index = 0,
+                                    element = bodyItem.items[0].toRandomItem()
+                                )
+                        )
+                    } else {
+                        bodyItem.copy(items = addBodyItem(bodyItem.items, id))
+                    }
+                }
+            }
+        }
+
+        return updateBodyItems.toImmutableList()
+    }
 }

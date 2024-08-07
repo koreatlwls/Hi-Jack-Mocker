@@ -38,12 +38,14 @@ import androidx.compose.ui.unit.sp
 internal fun KeyValueRow(
     key: String,
     value: Any,
+    isCanDelete : Boolean = false,
     onValueChange: (Any) -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Min)
+            .height(IntrinsicSize.Min),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
@@ -87,6 +89,11 @@ internal fun KeyValueRow(
                 )
             }
         }
+
+        AddDeleteIconButton(
+            isCanDelete = isCanDelete,
+            onDeleteClick = {},
+        )
     }
 }
 
@@ -101,7 +108,7 @@ private fun RowScope.BooleanValue(
             .fillMaxHeight()
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = Color.Gray,
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(8.dp),
@@ -143,7 +150,7 @@ private fun RowScope.NumberValue(
             .fillMaxHeight()
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = Color.Gray,
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(8.dp),
@@ -180,7 +187,7 @@ private fun RowScope.TextValue(
             .fillMaxHeight()
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = Color.Gray,
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(8.dp),
@@ -203,6 +210,7 @@ private fun KeyValueRowPreview() {
         KeyValueRow(
             key = "safsdafsdafsadfsdafsadfsdafsaddfsadfsdaf",
             value = false,
+            isCanDelete = true,
             onValueChange = {}
         )
     }
