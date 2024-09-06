@@ -64,7 +64,6 @@ object HiJackMocker {
             }
         )
 
-
     private fun Application.addLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(ActivityLifecycleCallbacksImpl())
     }
@@ -90,7 +89,7 @@ object HiJackMocker {
 
         override fun onActivityDestroyed(activity: Activity) {
             if (activity !is HjmActivity) {
-                removeHjmModeButton(activity)
+                removeHjmModeButton()
             }
         }
 
@@ -112,9 +111,9 @@ object HiJackMocker {
             activity.addContentView(composeView, params)
         }
 
-        private fun removeHjmModeButton(activity: Activity) {
+        private fun removeHjmModeButton() {
             composeView?.let {
-                (activity.window.decorView as? ViewGroup)?.removeView(it)
+                (it as? ViewGroup)?.removeView(it)
             }
             composeView = null
         }
