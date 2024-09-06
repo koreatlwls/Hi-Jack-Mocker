@@ -2,6 +2,8 @@ package com.koreatlwls.hjm.extensions
 
 import com.koreatlwls.hjm.model.ApiUiState
 import com.koreatlwls.hjm.model.CustomUiState
+import com.koreatlwls.hjm.model.JsonItem
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import okhttp3.RequestBody
@@ -41,15 +43,29 @@ internal fun Response.toCustomUiState(): CustomUiState {
             bodyItems = this.request.body
                 ?.extractRequestJson()
                 ?.parseJsonObjectToGroupedList()
+                ?.sortedJsonItem()
                 ?: persistentListOf()
         ),
         responseUiState = CustomUiState.ResponseUiState(
             bodyItems = this.body
                 ?.extractResponseJson()
                 ?.parseJsonObjectToGroupedList()
+                ?.sortedJsonItem()
                 ?: persistentListOf()
         )
     )
+}
+
+private fun ImmutableList<JsonItem>.sortedJsonItem(): ImmutableList<JsonItem> {
+    return this.sortedWith(
+        compareBy { item ->
+            when (item) {
+                is JsonItem.ArrayGroup -> 0
+                is JsonItem.ObjectGroup -> 1
+                is JsonItem.SingleItem -> 2
+            }
+        }
+    ).toImmutableList()
 }
 
 internal fun Response.toApiUiState(): ApiUiState = ApiUiState(
