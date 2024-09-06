@@ -9,11 +9,12 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
@@ -22,6 +23,7 @@ import com.koreatlwls.hjm.data.HjmDataStore
 import com.koreatlwls.hjm.data.HjmInterceptor
 import com.koreatlwls.hjm.data.InterceptorManager
 import com.koreatlwls.hjm.ui.HjmActivity
+import com.koreatlwls.hjm.ui.component.IconButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,6 +34,7 @@ object HiJackMocker {
     internal lateinit var interceptorManager: InterceptorManager
     private lateinit var hjmDataStore: HjmDataStore
     private lateinit var hjmInterceptor: HjmInterceptor
+    private var iconVisible by mutableStateOf(true)
 
     fun initialize(context: Context) {
         require(context is Application) {
@@ -120,23 +123,28 @@ object HiJackMocker {
             val checked by hjmDataStore.getHjmModeFlow().collectAsState(initial = false)
             val scope = rememberCoroutineScope()
 
-            IconButton(
-                onClick = {
-                    scope.launch {
-                        withContext(Dispatchers.IO) {
-                            hjmDataStore.setHjmMode(!checked)
+            if(iconVisible){
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            withContext(Dispatchers.IO) {
+                                hjmDataStore.setHjmMode(!checked)
+                            }
                         }
+                    },
+                    onLongClick = {
+                        iconVisible = false
                     }
+                ) {
+                    Image(
+                        modifier = Modifier.size(36.dp),
+                        painter = painterResource(
+                            id = if (checked) R.drawable.hjm_mode_on
+                            else R.drawable.hjm_mode_off
+                        ),
+                        contentDescription = null,
+                    )
                 }
-            ) {
-                Image(
-                    modifier = Modifier.size(36.dp),
-                    painter = painterResource(
-                        id = if (checked) R.drawable.hjm_mode_on
-                        else R.drawable.hjm_mode_off
-                    ),
-                    contentDescription = null,
-                )
             }
         }
     }
