@@ -61,15 +61,14 @@ object HiJackMocker {
             }
         )
 
-
     private fun Application.addLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(ActivityLifecycleCallbacksImpl())
     }
 
     private class ActivityLifecycleCallbacksImpl : Application.ActivityLifecycleCallbacks {
-        private var composeView : ComposeView? = null
+        private var composeView: ComposeView? = null
 
-        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?)= Unit
+        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = Unit
 
         override fun onActivityStarted(activity: Activity) = Unit
 
@@ -86,8 +85,8 @@ object HiJackMocker {
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
 
         override fun onActivityDestroyed(activity: Activity) {
-            if(activity !is HjmActivity){
-                removeHjmModeButton(activity)
+            if (activity !is HjmActivity) {
+                removeHjmModeButton()
             }
         }
 
@@ -109,9 +108,9 @@ object HiJackMocker {
             activity.addContentView(composeView, params)
         }
 
-        private fun removeHjmModeButton(activity: Activity) {
+        private fun removeHjmModeButton() {
             composeView?.let {
-                (activity.window.decorView as? ViewGroup)?.removeView(it)
+                (it as? ViewGroup)?.removeView(it)
             }
             composeView = null
         }
@@ -124,7 +123,7 @@ object HiJackMocker {
             IconButton(
                 onClick = {
                     scope.launch {
-                        withContext(Dispatchers.IO){
+                        withContext(Dispatchers.IO) {
                             hjmDataStore.setHjmMode(!checked)
                         }
                     }
